@@ -1,34 +1,36 @@
 import pythoncom
 from win32com.client import Dispatch
 
-pythoncom.CoInitialize()
+from Get_Kompas_API import get_kompas_api7
 
-# Базовое подключение БЕЗ gencache
-app_raw = Dispatch("Kompas.Application.7")
-print(f"КОМПАС подключен: {app_raw}")
-print(f"Видимость: {app_raw.Visible}")
-print(f"Количество документов: {app_raw.Documents.Count}")
+#def marker():
+api, KAPI7, api5, KAPI5 = get_kompas_api7()
+Document = api.ActiveDocument
+iDocument = KAPI7.IKompasDocument2D(
+    Document._oleobj_.QueryInterface(
+        KAPI7.IKompasDocument2D.CLSID,
+        pythoncom.IID_IDispatch
+    )
+)
+#iDocument = api.ActiveDocument
+#iKompasDocument2D1 = iDocument.IKompasDocument()
+#iKompasDocument2D1 = iDocument.IKompasDocument2D1()
+#SelectionManager = iKompasDocument2D1.SelectionManager
+#SelectedObjects = SelectionManager.SelectedObjects
+#draft = iKompasDocument2D1.IModelObject.IZone(SelectedObjects)
+dir(iDocument)
 
-# Попытка получить ActiveDocument
-try:
-    doc = app_raw.ActiveDocument
-    print(f"ActiveDocument: {doc}")
-    if doc:
-        print(f"Имя документа: {doc.Name}")
-        print(f"Тип: {doc.DocumentType}")
-        print(f"Путь: {doc.PathName}")
-    else:
-        print("ActiveDocument = None")
-except Exception as e:
-    print(f"Ошибка ActiveDocument: {e}")
+methods = [m for m in dir(iDocument) if not m.startswith('_') and callable(getattr(iDocument, m, None))]
+print("Методы:", methods)
 
+# 3. Фильтр свойств (без скобок)
+props = [p for p in dir(iDocument) if not p.startswith('_') and not callable(getattr(iDocument, p, None))]
+print("Свойства:", props)
 
-doc = app_raw.Documents
-if app_raw.Count > 0:
-    # Делаем первый документ активным
-    first_doc = doc.Item(0)
-    first_doc.Activate()  # ← Активируем!
-    doc = doc.ActiveDocument
-    print("После активации:", doc)
-pythoncom.CoUninitialize()
+# 4. Тестируем каждый метод с параметрами
+for method in methods[:5]:  # Первые 5
+    try:
+        print(f"{method}: {getattr(iDocument, method).__doc__}")
+    except:
+        print(f"{method}: требует параметры")
 

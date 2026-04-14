@@ -31,4 +31,4 @@ def get_kompas_api7():
 
 
     #return application, const, kompas_object, constants_3d, kompas_api7_module
-    return application, kompas_api7_module
+    return application, kompas_api7_module, application5, kompas6_api5_module
