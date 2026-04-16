@@ -20,6 +20,7 @@ def get_selected_objects():
     )
 
     sel_manager = doc2d1.SelectionManager
+    sel_obj = sel_manager.SelectedObjects
 
     attrs = [a for a in dir(sel_manager) if not a.startswith('_')]
     methods = [a for a in attrs if callable(getattr(sel_manager, a, None))]
@@ -27,9 +28,9 @@ def get_selected_objects():
     print("Методы sel_manager:", methods)
     print("Свойства sel_manager:", props)
 
-    return []
+    return sel_obj
 
 
 if __name__ == "__main__":
     objects = get_selected_objects()
-    print(f"Выделено объектов: {len(objects)}")
+    print(f"Выделено объектов: {objects}")

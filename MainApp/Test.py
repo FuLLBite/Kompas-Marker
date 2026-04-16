@@ -5,13 +5,18 @@ from Get_Kompas_API import get_kompas_api7
 
 #def marker():
 api, KAPI7, api5, KAPI5 = get_kompas_api7()
-Document = api.ActiveDocument
-iDocument = KAPI7.IKompasDocument2D(
-    Document._oleobj_.QueryInterface(
-        KAPI7.IKompasDocument2D.CLSID,
-        pythoncom.IID_IDispatch
+#iDocument = api.ActiveDocument
+doc = api.ActiveDocument
+doc2d1 = KAPI7.IKompasDocument2D1(
+        doc._oleobj_.QueryInterface(
+            KAPI7.IKompasDocument2D1.CLSID,
+            pythoncom.IID_IDispatch
+        )
     )
-)
+
+Document = doc2d1.SelectionManager
+iDocument = Document.SelectedObjects
+
 #iDocument = api.ActiveDocument
 #iKompasDocument2D1 = iDocument.IKompasDocument()
 #iKompasDocument2D1 = iDocument.IKompasDocument2D1()
