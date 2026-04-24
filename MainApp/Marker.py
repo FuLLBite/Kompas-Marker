@@ -29,5 +29,5 @@ doc2d1 = KAPI7.IKompasDocument2D1(
 
 Document = doc2d1.SelectionManager
 iObject = Document.SelectedObjects
-Param = iObject.DrawingObjectParamType
+#Param = iObject.DrawingObjectParamType
 print(iObject)
