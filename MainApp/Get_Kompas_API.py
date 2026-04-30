@@ -21,11 +21,11 @@ def get_kompas_api7():
     #constants_3d = gencache.EnsureModule("{2CAF168C-7961-4B90-9DA2-701419BEEFE3}", 0, 1, 0).constants
 
 
-    #const = gencache.EnsureModule("{75C9F5D0-B5B8-4526-8681-9903C567D2ED}", 0, 1, 0).constants
+    const = gencache.EnsureModule("{75C9F5D0-B5B8-4526-8681-9903C567D2ED}", 0, 1, 0).constants
     #kompas6_constants = gencache.EnsureModule("{75C9F5D0-B5B8-4526-8681-9903C567D2ED}", 0, 1, 0).constants
     #kompas6_constants_3d = gencache.EnsureModule("{2CAF168C-7961-4B90-9DA2-701419BEEFE3}", 0, 1, 0).constants
     kompas6_api5_module = gencache.EnsureModule("{0422828C-F174-495E-AC5D-D31014DBBE87}", 0, 1, 0)
-    application5 = kompas6_api5_module.KompasObject(
+    obj5 = kompas6_api5_module.KompasObject(
         Dispatch("Kompas.Application.5")._oleobj_.QueryInterface(kompas6_api5_module.KompasObject.CLSID,
                                                                  pythoncom.IID_IDispatch))
 
@@ -33,4 +33,4 @@ def get_kompas_api7():
 
 
     #return application, const, kompas_object, constants_3d, kompas_api7_module
-    return application, kompas_api7_module, application5, kompas6_api5_module, obj7
+    return application, kompas_api7_module, obj5, kompas6_api5_module, obj7, const
