@@ -5,18 +5,16 @@ import inspect
 from Get_Kompas_API import get_kompas_api7
 
 #def marker():
-api, KAPI7, api5, KAPI5, obj7 = get_kompas_api7()
-Document = api.ActiveDocument
-iDocument1 = KAPI7.IKompasDocument2D1(
-    Document._oleobj_.QueryInterface(
-        KAPI7.IKompasDocument2D1.CLSID,
-        pythoncom.IID_IDispatch
-    )
-)
-sel_manager = iDocument1.SelectionManager
+api, KAPI7, obj5, KAPI5, obj7, constants = get_kompas_api7()
 
-# Получаем коллекцию выделенных объектов
-iDocument = sel_manager.SelectedObjects
+kompas_document = api.ActiveDocument
+kompas_document_2d = KAPI7.IKompasDocument2D(kompas_document)
+iViewsAndLayersManager = kompas_document_2d.ViewsAndLayersManager
+iViews = iViewsAndLayersManager.Views
+iView = iViews.ActiveView
+iDrawingContainer = KAPI7.IDrawingContainer(iView)
+iDocument = iDrawingContainer.DrawingTexts
+
 #iDocument = api.ActiveDocument
 #iKompasDocument2D1 = iDocument.IKompasDocument()
 #iKompasDocument2D1 = iDocument.IKompasDocument2D1()
