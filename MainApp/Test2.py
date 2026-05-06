@@ -1,150 +1,119 @@
 import pythoncom
-from Get_Kompas_API import get_kompas_api7
+from win32com.client import Dispatch, gencache
 
-api, KAPI7, api5, KAPI5, obj7 = get_kompas_api7()
+# Генерация модулей API (выполнить ОДИН РАЗ при первом запуске)
+print("Генерация модулей API...")
+kapi7_module = gencache.EnsureModule("{69AC2981-37C0-4379-84FD-5DD2F3C0A520}", 0, 1, 0)  # API7
+kconst_module = gencache.EnsureModule("{75C9F5D0-B5B8-4526-8681-9903C567D2ED}", 0, 1, 0)  # Константы
+constants = kconst_module.constants
+print("Модули API сгенерированы.")
 
-iDocument = api.ActiveDocument
-doc2d = KAPI7.IKompasDocument2D1(
-    iDocument._oleobj_.QueryInterface(
-        KAPI7.IKompasDocument2D1.CLSID,
-        pythoncom.IID_IDispatch
-    )
-)
+def InsertText(ref, x, y):
+    """
+    ref: Reference из API5 (int/long)
+    x, y: координаты текста (float)
+    Создает гипертекст "K(номер листа,зона)"
+    """
+    pythoncom.CoInitialize()
 
-sel_manager = doc2d.SelectionManager
-macro_obj = sel_manager.SelectedObjects
-
-print("Тип объекта:", type(macro_obj))
-print()
-
-# Все атрибуты
-all_attrs = [a for a in dir(macro_obj) if not a.startswith('_')]
-methods = [a for a in all_attrs if callable(getattr(macro_obj, a, None))]
-props   = [a for a in all_attrs if not callable(getattr(macro_obj, a, None))]
-
-print("Методы:", methods)
-print()
-print("Свойства и их значения:")
-for p in props:
     try:
-        print(f"  {p} = {getattr(macro_obj, p)}")
+        # Подключение к Kompas API7
+        kompas_app = Dispatch("Kompas.Application.7")
+        kompas_app.Visible = True
+        kobj = kapi7_module.IKompasAPIObject(kompas_app)
+        print("Подключен к Kompas API7")
+
+        # Получить контейнер графических объектов (IDrawingContainer)
+        pDrawingContainer = kobj.GetDrawingContainer()
+        if pDrawingContainer is None:
+            print("Ошибка: Нет IDrawingContainer (откройте чертеж!)")
+            return False
+
+        print("Получен IDrawingContainer")
+
+        # Создать блок текста (IDrawingText)
+        pDrawingTexts = pDrawingContainer.DrawingTexts
+        pDrawingText = pDrawingTexts.Add()
+
+        # Настройки блока текста
+        pDrawingText.Allocation = constants.ksAlCentre  # По центру
+        pDrawingText.Angle = 0
+        pDrawingText.Height = 10
+        pDrawingText.Width = 50
+        pDrawingText.HFormat = constants.ksHFormatNot
+        pDrawingText.VFormat = False
+        pDrawingText.X = x - 20
+        pDrawingText.Y = y
+
+        # Получить интерфейс IText
+        pText = pDrawingText.QueryInterface(kapi7_module.IText)
+        if pText is None:
+            print("Ошибка: Не удалось получить IText")
+            return False
+
+        print("Создан IText")
+
+        # TransferReference: ref из API5 → API7
+        current_doc = kobj.ksGetCurrentDocument(0)
+        transferred_kobj = kobj.TransferReference(ref, current_doc)
+        if transferred_kobj is None:
+            print("Ошибка: TransferReference вернул None (неверный ref)")
+            return False
+
+        print("TransferReference выполнен")
+
+        # Строка 1: 'K'
+        pTextLine1 = pText.Add()
+        pTextLine1.Align = constants.ksAlignCenter
+        pTextLine1.Str = 'K'
+
+        # Строка 2: "(лист,зона)"
+        pTextLine2 = pText.Add()
+        pTextLine2.Align = constants.ksAlignCenter
+
+        # 1. '(' - обычный текст
+        pTextItem1 = pTextLine2.Add()
+        pTextItem1.Str = '('
+        pTextItem1.ItemType = constants.ksTItString
+        pTextItem1.Update()
+
+        # 2. Гиперссылка: Номер листа (ksHTObjectSheet)
+        pTextLine2.InsertHyperTextReference(1, transferred_kobj, constants.ksHTObjectSheet, False, 0, 0, 0)
+
+        # 3. ','
+        pTextItem2 = pTextLine2.Add()
+        pTextItem2.Str = ','
+        pTextItem2.ItemType = constants.ksTItString
+        pTextItem2.Update()
+
+        # 4. Гиперссылка: Обозначение зоны (ksHTObjectZone)
+        pTextLine2.InsertHyperTextReference(1, transferred_kobj, constants.ksHTObjectZone, False, 0, 0, 0)
+
+        # 5. ')'
+        pTextItem3 = pTextLine2.Add()
+        pTextItem3.Str = ')'
+        pTextItem3.ItemType = constants.ksTItString
+        pTextItem3.Update()
+
+        # Обновить блок текста
+        pDrawingText.Update()
+        print("✓ Текст 'K(лист,зона)' успешно вставлен в позицию ({:.1f}, {:.1f})".format(x-20, y))
+        return True
+
     except Exception as e:
-        print(f"  {p} = ОШИБКА: {e}")
+        print(f"Ошибка: {e}")
+        return False
+    finally:
+        pythoncom.CoUninitialize()
 
-print()
-print("--- Позиция макроэлемента (GetPlacement) ---")
-try:
-    placement = macro_obj.GetPlacement()
-    print(f"  Placement: {placement}")
-    print(f"  Тип: {type(placement)}")
-    placement_attrs = [a for a in dir(placement) if not a.startswith('_')]
-    print(f"  Атрибуты: {placement_attrs}")
-    for a in placement_attrs:
-        try:
-            print(f"    {a} = {getattr(placement, a)}")
-        except:
-            pass
-except Exception as e:
-    print(f"GetPlacement ошибка: {e}")
-
-x, y = 65.0, -137.0  # из GetPlacement
-
-print()
-print("--- IKompasDocument2D: DocumentFrames ---")
-try:
-    doc2d_base = KAPI7.IKompasDocument2D(
-        iDocument._oleobj_.QueryInterface(
-            KAPI7.IKompasDocument2D.CLSID,
-            pythoncom.IID_IDispatch
-        )
-    )
-
-    frames = doc2d_base.DocumentFrames
-    print(f"  DocumentFrames = {frames}")
-    print(f"  Тип: {type(frames)}")
-    if frames is not None:
-        frame_attrs = [a for a in dir(frames) if not a.startswith('_')]
-        print(f"  Атрибуты: {frame_attrs}")
-        for a in frame_attrs:
-            if not callable(getattr(frames, a, None)):
-                try:
-                    print(f"    {a} = {getattr(frames, a)}")
-                except Exception as e:
-                    print(f"    {a} = ОШИБКА: {e}")
-except Exception as e:
-    print(f"DocumentFrames ошибка: {e}")
-
-ref = macro_obj.Reference
-doc5 = api5.ActiveDocument2D()
-
-print()
-print("--- ksOpenMacro ---")
-try:
-    result = doc5.ksOpenMacro(ref)
-    print(f"  ksOpenMacro = {result}")
-except Exception as e:
-    print(f"  ksOpenMacro ошибка: {e}")
-
-print()
-print("--- GetSpecification на doc5 ---")
-try:
-    spec = doc5.GetSpecification()
-    print(f"  spec = {spec}, тип = {type(spec)}")
-    if spec is not None:
-        spec_attrs = [a for a in dir(spec) if not a.startswith('_')]
-        print(f"  Методы/свойства: {spec_attrs}")
-except Exception as e:
-    print(f"  GetSpecification ошибка: {e}")
-
-print()
-print("--- SpecificationDescriptions на doc2d_base ---")
-try:
-    spc_desc = doc2d_base.SpecificationDescriptions
-    print(f"  SpecificationDescriptions = {spc_desc}, тип = {type(spc_desc)}")
-    if spc_desc is not None:
-        attrs = [a for a in dir(spc_desc) if not a.startswith('_')]
-        print(f"  Атрибуты: {attrs}")
-        if hasattr(spc_desc, 'Count'):
-            print(f"  Count = {spc_desc.Count}")
-except Exception as e:
-    print(f"  SpecificationDescriptions ошибка: {e}")
-
-print()
-print("--- ksGetMacroPlacementEx ---")
-try:
-    result = doc5.ksGetMacroPlacementEx(ref)
-    print(f"  ksGetMacroPlacementEx = {result}")
-    print(f"  тип = {type(result)}")
-except Exception as e:
-    print(f"  ksGetMacroPlacementEx ошибка: {e}")
-
-print()
-print("--- DocumentFrames.Item(0) ---")
-try:
-    frame = doc2d_base.DocumentFrames.Item(0)
-    print(f"  frame тип = {type(frame)}")
-    if frame is not None:
-        attrs = [a for a in dir(frame) if not a.startswith('_')]
-        print(f"  Методы: {[a for a in attrs if callable(getattr(frame, a, None))]}")
-        for p in [a for a in attrs if not callable(getattr(frame, a, None))]:
-            try:
-                print(f"    {p} = {getattr(frame, p)}")
-            except Exception as e:
-                print(f"    {p} = ОШИБКА: {e}")
+# Тестирование
+if __name__ == "__main__":
+    # Замените ref на реальный Reference из вашего кода!
+    result = InsertText(ref=12345, x=100.0, y=200.0)  # ref должен быть валидным!
+    if result:
+        print("Скрипт выполнен успешно!")
     else:
-        print("  Item(0) тоже None")
-except Exception as e:
-    print(f"Item(0) ошибка: {e}")
-
-print()
-print("--- API5: doc5 свойства ---")
-try:
-    doc5 = api5.ActiveDocument2D()
-    print(f"  doc5 тип = {type(doc5)}")
-    attrs5 = [a for a in dir(doc5) if not a.startswith('_')]
-    zone_related = [a for a in attrs5 if 'zone' in a.lower() or 'зон' in a.lower()
-                    or 'stamp' in a.lower() or 'frame' in a.lower() or 'format' in a.lower()]
-    print(f"  Зона/штамп/формат атрибуты: {zone_related}")
-    print(f"  Все методы: {[a for a in attrs5 if callable(getattr(doc5, a, None))]}")
-except Exception as e:
-    print(f"API5 doc5 ошибка: {e}")
+        print("Скрипт завершился с ошибкой. Проверьте:")
+        print("- Kompas запущен с открытым чертежом")
+        print("- ref - валидный Reference из текущего документа")
+        print("- pywin32 установлен: pip install pywin32")

@@ -38,7 +38,10 @@ def GetObject(x, y):
 
     return Object
 
-def TextForHyper():
+def HyperLink(IndEdited, IndObject):
+    # Функция заменяет текст в текстовой метке IndEdited,
+    # на ссылку расположения текстовой метки IndObject
+    # IndEdited, IndObject - Индекс текстовой метки
 
     kompas_document = api.ActiveDocument
     kompas_document_2d = KAPI7.IKompasDocument2D(kompas_document)
@@ -48,14 +51,34 @@ def TextForHyper():
     iDrawingContainer = KAPI7.IDrawingContainer(iView)
     iDrawingTexts = iDrawingContainer.DrawingTexts
     IndexCount = iDrawingTexts.Count
-    iDrawingText = iDrawingTexts.DrawingText(1) # Индекс текстовой метки
-    iText = KAPI7.IText(iDrawingText)
-
+    iDrawingText0 = iDrawingTexts.DrawingText(IndObject) # Индекс текстовой метки
+    iDrawingText1 = iDrawingTexts.DrawingText(IndEdited) # Индекс текстовой метки
+    iText = KAPI7.IText(iDrawingText1)
     iTextLine = iText.TextLine(0) # Индекс строчки
-    iTextItem = iTextLine.TextItem(0)  # Индекс текстовой метки
+    iTextItem = iTextLine.TextItem(0)
     iTextItem.ItemType = 0x2000
+    iHypertextReferenceParam = KAPI7.IHypertextReferenceParam(iTextItem)
+    iHypertextReferenceParam.LinkObject = iDrawingText0
+    iHypertextReferenceParam.HypertextType = -1
     iTextItem.Update()
-    return IndexCount
-    #1073741864
+    iDrawingText1.Update()
+    iDrawingText0.Update()
 
-print(TextForHyper())
+    return
+
+def CountTexts():
+    # Функция возвращает количество текстовых меток
+
+    kompas_document = api.ActiveDocument
+    kompas_document_2d = KAPI7.IKompasDocument2D(kompas_document)
+    iViewsAndLayersManager = kompas_document_2d.ViewsAndLayersManager
+    iViews = iViewsAndLayersManager.Views
+    iView = iViews.ActiveView
+    iDrawingContainer = KAPI7.IDrawingContainer(iView)
+    iDrawingTexts = iDrawingContainer.DrawingTexts
+    IndexCount = iDrawingTexts.Count
+
+    return IndexCount
+
+
+

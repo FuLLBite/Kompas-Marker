@@ -13,7 +13,16 @@ iViewsAndLayersManager = kompas_document_2d.ViewsAndLayersManager
 iViews = iViewsAndLayersManager.Views
 iView = iViews.ActiveView
 iDrawingContainer = KAPI7.IDrawingContainer(iView)
-iDocument = iDrawingContainer.DrawingTexts
+iDrawingTexts = iDrawingContainer.DrawingTexts
+IndexCount = iDrawingTexts.Count
+iDrawingText1 = iDrawingTexts.DrawingText(0) # Индекс текстовой метки
+
+iDrawingText2 = iDrawingTexts.DrawingText(1) # Индекс текстовой метки
+iText = KAPI7.IText(iDrawingText2)
+
+iDocument= iText.TextLine(0)
+
+
 
 #iDocument = api.ActiveDocument
 #iKompasDocument2D1 = iDocument.IKompasDocument()
