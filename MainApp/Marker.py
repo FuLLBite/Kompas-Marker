@@ -13,3 +13,6 @@ kp = 3 # коэффициент поправки расположения
 KFunc.WriteText(Fx - kp, Fy - kp, KFunc.GetZona(Sx, Sy))
 KFunc.WriteText(Sx - kp, Sy - kp, KFunc.GetZona(Fx, Fy))
 
+# Связывание локальными ссылками тектовые метки
+KFunc.HyperLink(quantityTexts, quantityTexts+1)
+KFunc.HyperLink(quantityTexts+1, quantityTexts)
