@@ -38,7 +38,7 @@ def GetObject(x, y):
 
     return Object
 
-def HyperLink(IndEdited, IndObject):
+def HyperReference(IndEdited, IndObject):
     # Функция заменяет текст в текстовой метке IndEdited,
     # на ссылку расположения текстовой метки IndObject
     # IndEdited, IndObject - Индекс текстовой метки
@@ -80,5 +80,22 @@ def CountTexts():
 
     return IndexCount
 
+def HyperLink(IndObject, IndEdited):
+
+    kompas_document = api.ActiveDocument
+    kompas_document_2d = KAPI7.IKompasDocument2D(kompas_document)
+    iViewsAndLayersManager = kompas_document_2d.ViewsAndLayersManager
+    iViews = iViewsAndLayersManager.Views
+    iView = iViews.ActiveView
+    iDrawingContainer = KAPI7.IDrawingContainer(iView)
+    iDrawingTexts = iDrawingContainer.DrawingTexts
+    IndexCount = iDrawingTexts.Count
+    iDrawingText0 = iDrawingTexts.DrawingText(IndObject) # Индекс текстовой метки
+    iDrawingText1 = iDrawingTexts.DrawingText(IndEdited)
+
+    kompas_document = api.ActiveDocument
+    kompas_document_2d1 = KAPI7.IKompasDocument2D1(kompas_document)
+    kompas_document_2d1.CreateHyperLink(iDrawingText1, 2, "", iDrawingText0, 0)
 
 
+HyperLink(0, 1)
