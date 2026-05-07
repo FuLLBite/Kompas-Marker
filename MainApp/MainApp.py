@@ -1,22 +1,33 @@
-from Marker import marker
-import asyncio
+import Marker
+from tkinter import *
+from tkinter import ttk
+from tkinter import filedialog
+from tkinter.messagebox import showerror
+
+def TryToDo():
+
+    CodeOfProcess = Marker.mark()
+    if  CodeOfProcess == '001':
+        showerror(title="Ошибка", message="Координаты заданы неверно")
+    elif CodeOfProcess == '002':
+        showerror(title="Ошибка", message="Точка вне документа или документ - не чертеж")
+    elif CodeOfProcess == '003':
+        showerror(title="Ошибка", message="В текущем документе нет разбиения на зоны")
 
 
-async def exit():
-    await exit_ = input()
+# Настройка окна
+root = Tk()
+ttk.Style().theme_use('clam')
+root.title("Kompas Маркер")
+root.geometry("300x50")
+root.attributes('-topmost', True)
 
-    return exit_
+# Добавление кнопки пользователя
+btn = ttk.Button(text="Добавить ссылку", command=TryToDo)
+btn.pack(expand=True)
 
-async def main():
-    task = asyncio.create_task(exit())
 
-    await task
 
-asyncio.run(main())
 
-flag = True
-while flag:
-    marker()
-    com_exit = exit()
-    if com_exit == "/":
-        break
+
+root.mainloop()

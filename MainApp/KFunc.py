@@ -8,7 +8,7 @@ def GetCursor():
     ActiveDoc = obj5.ActiveDocument2D()
     request_info = obj5.GetParamStruct(constants.ko_RequestInfo)
     result, x, y = ActiveDoc.ksCursor(request_info, 0.0, 0.0, None)
-    return x, y
+    return x, y, result
 
 def WriteText(x, y, text):
     # Функция выводит текстовую строку в пространстве 2D документа, по координатам
@@ -26,7 +26,7 @@ def GetZona(x, y):
 
     ActiveDoc = obj5.ActiveDocument2D()
     Zona, result = ActiveDoc.ksGetZona(x, y)
-    return Zona
+    return Zona, result
 
 def GetObject(x, y):
     # Функция возвращает объект в заданных координатах на чертеже
@@ -64,7 +64,6 @@ def HyperReference(IndEdited, IndObject):
     iDrawingText1.Update()
     iDrawingText0.Update()
 
-    return
 
 def CountTexts():
     # Функция возвращает количество текстовых меток
@@ -81,6 +80,8 @@ def CountTexts():
     return IndexCount
 
 def HyperLink(IndObject, IndEdited):
+    # Функция связывает текстовые метки гиперссылками по индексам
+    # IndEdited, IndObject - Индекс текстовой метки
 
     kompas_document = api.ActiveDocument
     kompas_document_2d = KAPI7.IKompasDocument2D(kompas_document)
@@ -97,5 +98,3 @@ def HyperLink(IndObject, IndEdited):
     kompas_document_2d1 = KAPI7.IKompasDocument2D1(kompas_document)
     kompas_document_2d1.CreateHyperLink(iDrawingText1, 2, "", iDrawingText0, 0)
 
-
-HyperLink(0, 1)
