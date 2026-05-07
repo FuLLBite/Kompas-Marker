@@ -1,3 +1,5 @@
+from openpyxl.descriptors import Length
+import math
 from Get_Kompas_API import get_kompas_api7
 
 api, KAPI7, obj5, KAPI5, obj7, constants = get_kompas_api7()
@@ -98,3 +100,26 @@ def HyperLink(IndObject, IndEdited):
     kompas_document_2d1 = KAPI7.IKompasDocument2D1(kompas_document)
     kompas_document_2d1.CreateHyperLink(iDrawingText1, 2, "", iDrawingText0, 0)
 
+def MakeLine(x, y, length, angle):
+    # Функция строит на активном виде отрезок
+    # x - координаты по оси x
+    # y - координаты по оси y
+    # length - длина отрезка
+    # angle - угол наклона отрезка
+
+    kompas_document = api.ActiveDocument
+    kompas_document_2d = KAPI7.IKompasDocument2D(kompas_document)
+    iViewsAndLayersManager = kompas_document_2d.ViewsAndLayersManager
+    iViews = iViewsAndLayersManager.Views
+    iView = iViews.ActiveView
+    iDrawingContainer = KAPI7.IDrawingContainer(iView)
+    iLineSegments = iDrawingContainer.LineSegments
+    iLineSegment = iLineSegments.Add()
+    iLineSegment.X1 = x
+    iLineSegment.Y1 = y
+    iLineSegment.Length = length
+    iLineSegment.Angle = angle
+    iLineSegment.Update()
+
+def TextPlace(x, y, angle):
+    pass
