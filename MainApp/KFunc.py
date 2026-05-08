@@ -12,14 +12,14 @@ def GetCursor():
     result, x, y = ActiveDoc.ksCursor(request_info, 0.0, 0.0, None)
     return x, y, result
 
-def WriteText(x, y, text):
+def WriteText(x, y, text, angle=0, hStr=5):
     # Функция выводит текстовую строку в пространстве 2D документа, по координатам
     # x - координаты по оси x
     # y - координаты по оси y
     # text - текстовая строка для вывода
 
     ActiveDoc = obj5.ActiveDocument2D()
-    ActiveDoc.ksText(x, y, 0, 5, 1, 0, text)
+    ActiveDoc.ksText(x, y, angle, hStr, 1, 0, text)
 
 def GetZona(x, y):
     # Функция возвращает зону заданных координат на чертеже
@@ -100,7 +100,7 @@ def HyperLink(IndObject, IndEdited):
     kompas_document_2d1 = KAPI7.IKompasDocument2D1(kompas_document)
     kompas_document_2d1.CreateHyperLink(iDrawingText1, 2, "", iDrawingText0, 0)
 
-def MakeLine(x, y, length, angle):
+def MakeLine(x, y, angle, length=15):
     # Функция строит на активном виде отрезок
     # x - координаты по оси x
     # y - координаты по оси y
@@ -121,5 +121,3 @@ def MakeLine(x, y, length, angle):
     iLineSegment.Angle = angle
     iLineSegment.Update()
 
-def TextPlace(x, y, angle):
-    pass

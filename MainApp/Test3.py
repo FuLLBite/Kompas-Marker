@@ -1,23 +1,19 @@
-from win32com.client import Dispatch, gencache
-from Get_Kompas_API import get_kompas_api7
+from tkinter import *
+from tkinter import ttk
 
+root = Tk()
+root.title("METANIT.COM")
+root.geometry("250x200")
 
+def click():
+    window = Tk()
+    window.title("Новое окно")
+    window.geometry("250x200")
+    close_button = ttk.Button(window, text="Закрыть окно", command=lambda: window.destroy())
+    close_button.pack(anchor="center", expand=1)
 
+open_button = ttk.Button(text="Создать окно", command=click)
+open_button.pack(anchor="center", expand=1)
 
-def GetCursor():
-
-    api, KAPI7, obj5, KAPI5, obj7, constants = get_kompas_api7()
-    ActiveDoc = obj5.ActiveDocument2D()
-
-    request_info = obj5.GetParamStruct(constants.ko_RequestInfo)
-    result, x, y = ActiveDoc.ksCursor(request_info, 0.0, 0.0, None)
-
-    return x, y
-
-
-
-def WriteText():
-    api, KAPI7, obj5, KAPI5, obj7, constants = get_kompas_api7()
-    ActiveDoc = obj5.ActiveDocument2D()
-    ActiveDoc.ksText(100, 100, 0, 5, 1, 0, 'TYR')
+root.mainloop()
 
