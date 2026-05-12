@@ -28,51 +28,47 @@ def GetCoord(x, y, Direction, length):
      # Поправочный коэффициент
     k = 5
     if Direction == 0: # Вправо
-        CoordX = x + length + k
-        CoordY = y
+        CoordX = x + length
+        CoordY = y - 2
     elif Direction == 90: # Вверх
-        CoordX = x - 5
+        CoordX = x - 2
         CoordY = y + length + k
     elif Direction == 180: # Влево
-        CoordX = x - length - k
-        CoordY = y
+        CoordX = x - length - 10
+        CoordY = y - 2
     elif Direction == -90: # Вниз
         CoordX = x - 5
-        CoordY = y - length - k
+        CoordY = y - length - 7
 
     return CoordX, CoordY
 
 def SignName(x, y, LineName, Direction):
     if Direction == 0: # Вправо
         KFunc.WriteText(x+4, y+2, LineName, hStr=3.5)
+
     elif Direction == 90: # Вверх
         KFunc.WriteText(x-2, y+4, LineName, 90, hStr=3.5)
+
     elif Direction == 180: # Влево
-        KFunc.WriteText(x-4, y+2, LineName, hStr=3.5)
+        KFunc.WriteText(x-len(LineName)*2.2-2, y+2, LineName, hStr=3.5)
+
     elif Direction == -90: # Вниз
-        KFunc.WriteText(x+2, y-4, LineName, 90, hStr=3.5)
+        KFunc.WriteText(x-2, y-len(LineName)*2.2-2, LineName, 90, hStr=3.5)
+
 
 
 def mark(Fx, Fy, DirectionF, Sx, Sy, LineName, DirectionS):
 
-    length=15
-    #print(f'Fx - {Fx}, тип {type(Fx)}')
-    #print(f'Fy - {Fy}, тип {type(Fy)}')
-    #print(f'DirectionF - {DirectionF}, тип {type(DirectionF)}')
-    #print(f'Sx - {Sx}, тип {type(Sx)}')
-    #print(f'Sy - {Sy}, тип {type(Sy)}')
-    #print(f'LineName - {LineName}, тип {type(LineName)}')
-    #print(f'DirectionS - {DirectionS}, тип {type(DirectionS)}')
+    length = 20
 
     KFunc.MakeLine(Fx, Fy, DirectionF, length)
     KFunc.MakeLine(Sx, Sy, DirectionS, length)
 
-
-
     SignName(Fx, Fy, LineName, DirectionF)
-    SignName(Sx, Sy, LineName, DirectionF)
+    SignName(Sx, Sy, LineName, DirectionS)
 
     quantityTexts = KFunc.CountTexts()
+
 
     CoordXF, CoordYF = GetCoord(Fx, Fy, int(DirectionF), length)
     CoordXS, CoordYS = GetCoord(Sx, Sy, int(DirectionS), length)

@@ -8,7 +8,23 @@ from Get_Kompas_API import get_kompas_api7
 api, KAPI7, obj5, KAPI5, obj7, constants = get_kompas_api7()
 
 kompas_document = api.ActiveDocument
-iDocument = KAPI7.IKompasDocument2D1(kompas_document)
+kompas_document_2d = KAPI7.IKompasDocument2D(kompas_document)
+iViewsAndLayersManager = kompas_document_2d.ViewsAndLayersManager
+iViews = iViewsAndLayersManager.Views
+iView = iViews.ActiveView
+iDrawingContainer = KAPI7.IDrawingContainer(iView)
+iDrawingTexts = iDrawingContainer.DrawingTexts
+
+iDrawingText0 = iDrawingTexts.DrawingText(0) # Индекс текстовой метки
+iDrawingText1 = iDrawingTexts.DrawingText(1) # Индекс текстовой метки
+iText = KAPI7.IText(iDrawingText1)
+iTextLine = iText.TextLine(0) # Индекс строчки
+iTextItem = iTextLine.TextItem(0)
+iTextItem.ItemType = 0x2000
+iHypertextReferenceParam = KAPI7.IHypertextReferenceParam(iTextItem)
+iHypertextReferenceParam.LinkObject = iDrawingText0
+
+iDocument = iHypertextReferenceParam.HypertextType
 
 
 

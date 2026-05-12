@@ -21,12 +21,12 @@ def TryToDo():
 def GetLineParam(name, order, direct):
 
     if order == 1:
-        #print(f'direct1 - {direct}, type - {type(direct)}')
+
         app.DirectionF = int(direct)
         app.LineName = name.get()
 
     elif order == 2:
-        #print(f'direct1 - {direct}, type - {type(direct)}')
+
         app.DirectionS = int(direct)
 
 
@@ -37,7 +37,7 @@ def ChooseMenuF():
     # и наименование сигнала
     window1 = Tk()
     window1.title("Первая точка")
-    window1.geometry("250x300")
+    window1.geometry("250x250")
     window1.attributes('-topmost', True)
     # текстовая метка
     label1 = ttk.Label(window1, text="Наименование сигнала")
@@ -46,26 +46,30 @@ def ChooseMenuF():
     EntryName = ttk.Entry(window1)
     EntryName.pack(anchor='n', padx=20, pady=5)
 
-    position = {"padx":6, "pady":6, "anchor":"w"}
+    position = {"padx":6, "pady":6, "anchor":"c"}
+    WidthOfButton = 30
 
-
-
-    DirectionF = IntVar()
-
-    directionUp = ttk.Radiobutton(window1, text='Направление ссылки на верх', value=90, variable=DirectionF, command=lambda: GetLineParam(EntryName, 1, 90))
+    directionUp = ttk.Button(window1, text='Направление ссылки на верх', width=WidthOfButton,
+                             command=lambda: [GetLineParam(EntryName, 1, 90),
+                                              Marker.getinfo1(1, app), ChooseMenuS(),
+                                              window1.destroy()])
     directionUp.pack(**position)
-    directionDown = ttk.Radiobutton(window1, text='Направление ссылки вниз', value=-90, variable=DirectionF, command=lambda: GetLineParam(EntryName, 1, -90))
+    directionDown = ttk.Button(window1, text='Направление ссылки вниз', width=WidthOfButton,
+                               command=lambda: [GetLineParam(EntryName, 1, -90),
+                                                Marker.getinfo1(1, app), ChooseMenuS(),
+                                                window1.destroy()])
     directionDown.pack(**position)
-    directionUp = ttk.Radiobutton(window1, text='Направление ссылки вправо', value=0, variable=DirectionF, command=lambda: GetLineParam(EntryName, 1, 0))
-    directionUp.pack(**position)
-    directionDown = ttk.Radiobutton(window1, text='Направление ссылки влево', value=180, variable=DirectionF, command=lambda: GetLineParam(EntryName, 1, 180))
-    directionDown.pack(**position)
-
-    buttonNext = ttk.Button(window1, text="Следующая точка", command=lambda: [ChooseMenuS(), window1.destroy()])
-    buttonNext.place(relx=.95, rely=.9, anchor="se")
-
-    buttonGetInfo = ttk.Button(window1, text="Указать точку", command=lambda: Marker.getinfo1(1, app))
-    buttonGetInfo .place(relx=.05, rely=.9, anchor="sw")
+    directionRight = ttk.Button(window1, text='Направление ссылки вправо', width=WidthOfButton,
+                                command=lambda: [GetLineParam(EntryName, 1, 0),
+                                                 Marker.getinfo1(1, app), ChooseMenuS(),
+                                                 window1.destroy()])
+    directionRight.pack(**position)
+    directionLeft = ttk.Button(window1, text='Направление ссылки влево', width=WidthOfButton,
+                               command=lambda: [GetLineParam(EntryName, 1, 180),
+                                                Marker.getinfo1(1, app),
+                                                ChooseMenuS(),
+                                                window1.destroy()])
+    directionLeft.pack(**position)
 
 
 
@@ -74,34 +78,42 @@ def ChooseMenuS():
     # и наименование сигнала
     window2 = Tk()
     window2.title("Вторая точка")
-    window2.geometry("250x250")
+    window2.geometry("250x200")
     window2.attributes('-topmost', True)
 
-    position = {"padx":6, "pady":6, "anchor":"w"}
+    position = {"padx":6, "pady":6, "anchor":"c"}
+    WidthOfButton = 30
 
-    DirectionS = IntVar()
-
-    directionUp = ttk.Radiobutton(window2, text='Направление ссылки на верх', value=90, variable=app.DirectionS, command=lambda: GetLineParam(None, 2, 90))
+    directionUp = ttk.Button(window2, text='Направление ссылки на верх', width=WidthOfButton,
+                             command=lambda: [GetLineParam(None, 2, 90),
+                                             Marker.getinfo1(2, app),
+                                             Marker.mark(app.Fx, app.Fy, app.DirectionF, app.Sx,
+                                                         app.Sy, app.LineName, app.DirectionS),
+                                             window2.destroy()])
     directionUp.pack(**position)
-    directionDown = ttk.Radiobutton(window2, text='Направление ссылки вниз', value=-90, variable=app.DirectionS, command=lambda: GetLineParam(None, 2, -90))
-    directionDown.pack(**position)
-    directionUp = ttk.Radiobutton(window2, text='Направление ссылки вправо', value=0, variable=app.DirectionS, command=lambda: GetLineParam(None, 2, 0))
-    directionUp.pack(**position)
-    directionDown = ttk.Radiobutton(window2, text='Направление ссылки влево', value=180, variable=app.DirectionS, command=lambda: GetLineParam(None, 2, 180))
-    directionDown.pack(**position)
 
-    buttonGetInfo = ttk.Button(window2, text="Указать точку", command=lambda: [Marker.getinfo1(2, app)])
-    buttonGetInfo .place(relx=.05, rely=.9, anchor="sw")
+    directionDown = ttk.Button(window2, text='Направление ссылки вниз', width=WidthOfButton,
+                               command=lambda: [GetLineParam(None, 2, -90),
+                                                Marker.getinfo1(2, app),
+                                                Marker.mark(app.Fx, app.Fy, app.DirectionF, app.Sx,
+                                                            app.Sy, app.LineName, app.DirectionS),
+                                                window2.destroy()])
+    directionDown.pack(**position)
+    directionRight = ttk.Button(window2, text='Направление ссылки вправо', width=WidthOfButton,
+                                command=lambda: [GetLineParam(None, 2, 0),
+                                                 Marker.getinfo1(2, app),
+                                                 Marker.mark(app.Fx, app.Fy, app.DirectionF, app.Sx,
+                                                             app.Sy, app.LineName, app.DirectionS),
+                                                 window2.destroy()])
+    directionRight.pack(**position)
+    directionLeft = ttk.Button(window2, text='Направление ссылки влево', width=WidthOfButton,
+                               command=lambda: [GetLineParam(None, 2, 180),
+                                                Marker.getinfo1(2, app),
+                                                Marker.mark(app.Fx, app.Fy, app.DirectionF, app.Sx,
+                                                            app.Sy, app.LineName, app.DirectionS),
+                                                window2.destroy()])
+    directionLeft.pack(**position)
 
-    buttonFinish = ttk.Button(window2, text="Завершить", command=lambda: [Marker.mark(app.Fx,
-                                                                                      app.Fy,
-                                                                                      app.DirectionF,
-                                                                                      app.Sx,
-                                                                                      app.Sy,
-                                                                                      app.LineName,
-                                                                                      app.DirectionS),
-                                                                          window2.destroy()])
-    buttonFinish.place(relx=.95, rely=.9, anchor="se")
 
 
 
@@ -140,12 +152,6 @@ app.run()
 
 
 # Исправить ошибку - не верные ссылки (Баг при частом запуске)
-
-# Исправить расположение текста наименования сигнала
-
-# Сделать указание точки по Radiobutton, убрать лишние кнопки
-
-# Добавить адаптивность к длине наименования сигнала
 
 # Добавить ссылку на текст в наименовании одного из сигналов
 

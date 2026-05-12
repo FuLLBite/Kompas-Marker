@@ -40,7 +40,7 @@ def GetObject(x, y):
 
     return Object
 
-def HyperReference(IndEdited, IndObject):
+def HyperReference(IndEdited, IndObject, codeFun=-1):
     # Функция заменяет текст в текстовой метке IndEdited,
     # на ссылку расположения текстовой метки IndObject
     # IndEdited, IndObject - Индекс текстовой метки
@@ -52,7 +52,7 @@ def HyperReference(IndEdited, IndObject):
     iView = iViews.ActiveView
     iDrawingContainer = KAPI7.IDrawingContainer(iView)
     iDrawingTexts = iDrawingContainer.DrawingTexts
-    IndexCount = iDrawingTexts.Count
+
     iDrawingText0 = iDrawingTexts.DrawingText(IndObject) # Индекс текстовой метки
     iDrawingText1 = iDrawingTexts.DrawingText(IndEdited) # Индекс текстовой метки
     iText = KAPI7.IText(iDrawingText1)
@@ -61,7 +61,7 @@ def HyperReference(IndEdited, IndObject):
     iTextItem.ItemType = 0x2000
     iHypertextReferenceParam = KAPI7.IHypertextReferenceParam(iTextItem)
     iHypertextReferenceParam.LinkObject = iDrawingText0
-    iHypertextReferenceParam.HypertextType = -1
+    iHypertextReferenceParam.HypertextType = codeFun
     iTextItem.Update()
     iDrawingText1.Update()
     iDrawingText0.Update()
