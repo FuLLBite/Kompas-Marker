@@ -6,6 +6,7 @@ from tkinter import ttk
 from tkinter import filedialog
 from tkinter.messagebox import showerror
 
+
 def TryToDo():
 
     CodeOfProcess = Marker.mark()
@@ -20,10 +21,14 @@ def TryToDo():
 def GetLineParam(name, order, direct):
 
     if order == 1:
-        app.DirectionF = int(direct.get())
+        #print(f'direct1 - {direct}, type - {type(direct)}')
+        app.DirectionF = int(direct)
         app.LineName = name.get()
+
     elif order == 2:
-        app.DirectionS = int(direct.get())
+        #print(f'direct1 - {direct}, type - {type(direct)}')
+        app.DirectionS = int(direct)
+
 
 
 
@@ -38,23 +43,25 @@ def ChooseMenuF():
     label1 = ttk.Label(window1, text="Наименование сигнала")
     label1.pack(anchor='n', padx=20, pady=10)
 
-    EntryName= ttk.Entry(window1)
+    EntryName = ttk.Entry(window1)
     EntryName.pack(anchor='n', padx=20, pady=5)
 
     position = {"padx":6, "pady":6, "anchor":"w"}
 
-    DirectionF = IntVar(value=90)
 
-    directionUp = ttk.Radiobutton(window1, text='Направление ссылки на верх', value=90, variable=DirectionF)
+
+    DirectionF = IntVar()
+
+    directionUp = ttk.Radiobutton(window1, text='Направление ссылки на верх', value=90, variable=DirectionF, command=lambda: GetLineParam(EntryName, 1, 90))
     directionUp.pack(**position)
-    directionDown = ttk.Radiobutton(window1, text='Направление ссылки вниз', value=-90, variable=DirectionF)
+    directionDown = ttk.Radiobutton(window1, text='Направление ссылки вниз', value=-90, variable=DirectionF, command=lambda: GetLineParam(EntryName, 1, -90))
     directionDown.pack(**position)
-    directionUp = ttk.Radiobutton(window1, text='Направление ссылки вправо', value=0, variable=DirectionF)
+    directionUp = ttk.Radiobutton(window1, text='Направление ссылки вправо', value=0, variable=DirectionF, command=lambda: GetLineParam(EntryName, 1, 0))
     directionUp.pack(**position)
-    directionDown = ttk.Radiobutton(window1, text='Направление ссылки влево', value=180, variable=DirectionF)
+    directionDown = ttk.Radiobutton(window1, text='Направление ссылки влево', value=180, variable=DirectionF, command=lambda: GetLineParam(EntryName, 1, 180))
     directionDown.pack(**position)
 
-    buttonNext = ttk.Button(window1, text="Следующая точка", command=lambda: [GetLineParam(EntryName, 1, DirectionF), ChooseMenuS(), window1.destroy()])
+    buttonNext = ttk.Button(window1, text="Следующая точка", command=lambda: [ChooseMenuS(), window1.destroy()])
     buttonNext.place(relx=.95, rely=.9, anchor="se")
 
     buttonGetInfo = ttk.Button(window1, text="Указать точку", command=lambda: Marker.getinfo1(1, app))
@@ -72,22 +79,21 @@ def ChooseMenuS():
 
     position = {"padx":6, "pady":6, "anchor":"w"}
 
-    DirectionS = IntVar(value=90)
+    DirectionS = IntVar()
 
-    directionUp = ttk.Radiobutton(window2, text='Направление ссылки на верх', value=90, variable=DirectionS)
+    directionUp = ttk.Radiobutton(window2, text='Направление ссылки на верх', value=90, variable=app.DirectionS, command=lambda: GetLineParam(None, 2, 90))
     directionUp.pack(**position)
-    directionDown = ttk.Radiobutton(window2, text='Направление ссылки вниз', value=-90, variable=DirectionS)
+    directionDown = ttk.Radiobutton(window2, text='Направление ссылки вниз', value=-90, variable=app.DirectionS, command=lambda: GetLineParam(None, 2, -90))
     directionDown.pack(**position)
-    directionUp = ttk.Radiobutton(window2, text='Направление ссылки вправо', value=0, variable=DirectionS)
+    directionUp = ttk.Radiobutton(window2, text='Направление ссылки вправо', value=0, variable=app.DirectionS, command=lambda: GetLineParam(None, 2, 0))
     directionUp.pack(**position)
-    directionDown = ttk.Radiobutton(window2, text='Направление ссылки влево', value=180, variable=DirectionS)
+    directionDown = ttk.Radiobutton(window2, text='Направление ссылки влево', value=180, variable=app.DirectionS, command=lambda: GetLineParam(None, 2, 180))
     directionDown.pack(**position)
 
-    buttonGetInfo = ttk.Button(window2, text="Указать точку", command=lambda: Marker.getinfo1(2, app))
+    buttonGetInfo = ttk.Button(window2, text="Указать точку", command=lambda: [Marker.getinfo1(2, app)])
     buttonGetInfo .place(relx=.05, rely=.9, anchor="sw")
 
-    buttonFinish = ttk.Button(window2, text="Завершить", command=lambda: [GetLineParam(None, 2, DirectionS),
-                                                                          Marker.mark(app.Fx,
+    buttonFinish = ttk.Button(window2, text="Завершить", command=lambda: [Marker.mark(app.Fx,
                                                                                       app.Fy,
                                                                                       app.DirectionF,
                                                                                       app.Sx,
@@ -132,12 +138,16 @@ class App:
 app = App()
 app.run()
 
-# Исправить ошибку - сейчас рисуются только вертикальные линии)))
-# Исправить ошибку - не верные ссылки
+
+# Исправить ошибку - не верные ссылки (Баг при частом запуске)
+
+# Исправить расположение текста наименования сигнала
+
+# Сделать указание точки по Radiobutton, убрать лишние кнопки
 
 # Добавить адаптивность к длине наименования сигнала
 
 # Добавить ссылку на текст в наименовании одного из сигналов
 
-# В последнем меню убрать кнопку указать точку, вместо этого
-# сделать запуск функции по кнопке предыдущего меню - "Следующая точка"
+
+

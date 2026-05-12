@@ -56,9 +56,18 @@ def SignName(x, y, LineName, Direction):
 def mark(Fx, Fy, DirectionF, Sx, Sy, LineName, DirectionS):
 
     length=15
+    #print(f'Fx - {Fx}, тип {type(Fx)}')
+    #print(f'Fy - {Fy}, тип {type(Fy)}')
+    #print(f'DirectionF - {DirectionF}, тип {type(DirectionF)}')
+    #print(f'Sx - {Sx}, тип {type(Sx)}')
+    #print(f'Sy - {Sy}, тип {type(Sy)}')
+    #print(f'LineName - {LineName}, тип {type(LineName)}')
+    #print(f'DirectionS - {DirectionS}, тип {type(DirectionS)}')
 
     KFunc.MakeLine(Fx, Fy, DirectionF, length)
     KFunc.MakeLine(Sx, Sy, DirectionS, length)
+
+
 
     SignName(Fx, Fy, LineName, DirectionF)
     SignName(Sx, Sy, LineName, DirectionF)
