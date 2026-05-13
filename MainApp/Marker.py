@@ -8,10 +8,10 @@ from tkinter.messagebox import showerror
 
 def getinfo1(order, app_obj):
     # Получение координат точки
+    # order - Порядок
+    # app_obj - объект
     while True:
-
         x, y, result = KFunc.GetCursor()
-        #print(f'{x}, {y}')
         if result != -1:
             showerror(title="Ошибка", message="Координаты заданы неверно")
         else:
@@ -44,13 +44,13 @@ def GetCoord(x, y, Direction, length):
 
 def SignName(x, y, LineName, Direction):
     if Direction == 0: # Вправо
-        KFunc.WriteText(x+4, y+2, LineName, hStr=3.5)
+        KFunc.WriteText(x+2, y+2, LineName, hStr=3.5)
 
     elif Direction == 90: # Вверх
-        KFunc.WriteText(x-2, y+4, LineName, 90, hStr=3.5)
+        KFunc.WriteText(x-2, y+2, LineName, 90, hStr=3.5)
 
     elif Direction == 180: # Влево
-        KFunc.WriteText(x-len(LineName)*2.2-2, y+2, LineName, hStr=3.5)
+        KFunc.WriteText(x-len(LineName)*2.2-3, y+2, LineName, hStr=3.5)
 
     elif Direction == -90: # Вниз
         KFunc.WriteText(x-2, y-len(LineName)*2.2-2, LineName, 90, hStr=3.5)
@@ -58,18 +58,22 @@ def SignName(x, y, LineName, Direction):
 
 
 def mark(Fx, Fy, DirectionF, Sx, Sy, LineName, DirectionS):
+    # Основная логика программы
 
-    length = 20
+    length = 20 # Длина линии ссылки
 
+    # Отрисовка линии ссылки в поле чертежа
     KFunc.MakeLine(Fx, Fy, DirectionF, length)
     KFunc.MakeLine(Sx, Sy, DirectionS, length)
 
+    # Вывод наименования сигнала в поле чертежа
     SignName(Fx, Fy, LineName, DirectionF)
     SignName(Sx, Sy, LineName, DirectionS)
 
+    # Получение количества текстовых меток в документе
     quantityTexts = KFunc.CountTexts()
 
-
+    # Задание координат для вывода ссылочных меток
     CoordXF, CoordYF = GetCoord(Fx, Fy, int(DirectionF), length)
     CoordXS, CoordYS = GetCoord(Sx, Sy, int(DirectionS), length)
 
@@ -79,9 +83,9 @@ def mark(Fx, Fy, DirectionF, Sx, Sy, LineName, DirectionS):
 
     # Обработка состояния ошибки при точке вне зоны и отсутствия зон в документе
     if FResultZona == 0 or SResultZona == 0:
-        return '002'  # Точка вне документа или документ - не чертеж
+        showerror(title="Ошибка", message="Точка вне документа или документ - не чертеж")
     elif FResultZona == -1 or SResultZona == -1:
-        return '003'  # В текущем документе нет разбиения на зоны
+        showerror(title="Ошибка", message="В текущем документе нет разбиения на зоны")
 
     # Вывод текстовой строки с обозначение зоны
     KFunc.WriteText(CoordXF, CoordYF, SZona)

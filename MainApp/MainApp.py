@@ -7,26 +7,16 @@ from tkinter import filedialog
 from tkinter.messagebox import showerror
 
 
-def TryToDo():
-
-    CodeOfProcess = Marker.mark()
-    if  CodeOfProcess == '001':
-        showerror(title="Ошибка", message="Координаты заданы неверно")
-    elif CodeOfProcess == '002':
-        showerror(title="Ошибка", message="Точка вне документа или документ - не чертеж")
-    elif CodeOfProcess == '003':
-        showerror(title="Ошибка", message="В текущем документе нет разбиения на зоны")
-
-
 def GetLineParam(name, order, direct):
+    # Получение параметров о наименовании и направлении ссылки сигнала
+    # name - Наименование сигнала
+    # order - Порядок
+    # direct - Направление ссылки
 
     if order == 1:
-
         app.DirectionF = int(direct)
         app.LineName = name.get()
-
     elif order == 2:
-
         app.DirectionS = int(direct)
 
 
@@ -35,6 +25,8 @@ def GetLineParam(name, order, direct):
 def ChooseMenuF():
     # Получение получение информации о направлении ссылки
     # и наименование сигнала
+
+    # Настройка окна
     window1 = Tk()
     window1.title("Первая точка")
     window1.geometry("250x250")
@@ -42,13 +34,13 @@ def ChooseMenuF():
     # текстовая метка
     label1 = ttk.Label(window1, text="Наименование сигнала")
     label1.pack(anchor='n', padx=20, pady=10)
-
+    # Вывод в окно поля для получения наименования сигнала
     EntryName = ttk.Entry(window1)
     EntryName.pack(anchor='n', padx=20, pady=5)
-
+    # Параметры кнопок
     position = {"padx":6, "pady":6, "anchor":"c"}
     WidthOfButton = 30
-
+    # Вывод в окно функциональных кнопок
     directionUp = ttk.Button(window1, text='Направление ссылки на верх', width=WidthOfButton,
                              command=lambda: [GetLineParam(EntryName, 1, 90),
                                               Marker.getinfo1(1, app), ChooseMenuS(),
@@ -76,14 +68,16 @@ def ChooseMenuF():
 def ChooseMenuS():
     # Получение получение информации о направлении ссылки
     # и наименование сигнала
+
+    # Настройка окна
     window2 = Tk()
     window2.title("Вторая точка")
     window2.geometry("250x200")
     window2.attributes('-topmost', True)
-
+    # Параметры кнопок
     position = {"padx":6, "pady":6, "anchor":"c"}
     WidthOfButton = 30
-
+    # Вывод в окно функциональных кнопок
     directionUp = ttk.Button(window2, text='Направление ссылки на верх', width=WidthOfButton,
                              command=lambda: [GetLineParam(None, 2, 90),
                                              Marker.getinfo1(2, app),
@@ -150,10 +144,6 @@ class App:
 app = App()
 app.run()
 
-
-# Исправить ошибку - не верные ссылки (Баг при частом запуске)
-
-# Добавить ссылку на текст в наименовании одного из сигналов
 
 
 
