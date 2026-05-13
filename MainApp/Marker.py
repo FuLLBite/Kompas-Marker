@@ -26,13 +26,13 @@ def getinfo1(order, app_obj):
 
 def GetCoord(x, y, Direction, length):
      # Поправочный коэффициент
-    k = 5
+
     if Direction == 0: # Вправо
         CoordX = x + length
         CoordY = y - 2
     elif Direction == 90: # Вверх
-        CoordX = x - 2
-        CoordY = y + length + k
+        CoordX = x - 3
+        CoordY = y + length + 3
     elif Direction == 180: # Влево
         CoordX = x - length - 10
         CoordY = y - 2
