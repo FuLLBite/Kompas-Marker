@@ -1,9 +1,4 @@
-from adodbapi.ado_consts import directions
-
 import KFunc
-from tkinter import *
-from tkinter import ttk
-from tkinter import filedialog
 from tkinter.messagebox import showerror
 
 def getinfo1(order, app_obj):
@@ -25,7 +20,6 @@ def getinfo1(order, app_obj):
 
 
 def GetCoord(x, y, Direction, length):
-     # Поправочный коэффициент
 
     if Direction == 0: # Вправо
         CoordX = x + length
@@ -42,22 +36,24 @@ def GetCoord(x, y, Direction, length):
 
     return CoordX, CoordY
 
-def SignName(x, y, LineName, Direction):
-    if Direction == 0: # Вправо
-        KFunc.WriteText(x+2, y+2, LineName, hStr=3.5)
+def SignName(x, y, lineName, direction, profile):
+    profile_mm = profile+'мм$2' if profile!='' else profile
+    if direction == 0: # Вправо
+        KFunc.WriteText(x+2, y+2, lineName, hStr=3.5)
+        KFunc.WriteText(x+2, y-6, profile_mm, hStr=3.5)
+    elif direction == 90: # Вверх
+        KFunc.WriteText(x-2, y+2, lineName, 90, hStr=3.5)
+        KFunc.WriteText(x+6, y+2, profile_mm, 90, hStr=3.5)
+    elif direction == 180: # Влево
+        KFunc.WriteText(x-len(lineName)*2.2-3, y+2, lineName, hStr=3.5)
+        KFunc.WriteText(x-len(profile_mm)*2.2, y-6, profile_mm, hStr=3.5)
+    elif direction == -90: # Вниз
+        KFunc.WriteText(x-2, y-len(lineName)*2.2-2, lineName, 90, hStr=3.5)
+        KFunc.WriteText(x+8, y-len(profile_mm)*2.2, profile_mm, 90, hStr=3.5)
 
-    elif Direction == 90: # Вверх
-        KFunc.WriteText(x-2, y+2, LineName, 90, hStr=3.5)
-
-    elif Direction == 180: # Влево
-        KFunc.WriteText(x-len(LineName)*2.2-3, y+2, LineName, hStr=3.5)
-
-    elif Direction == -90: # Вниз
-        KFunc.WriteText(x-2, y-len(LineName)*2.2-2, LineName, 90, hStr=3.5)
 
 
-
-def mark(Fx, Fy, DirectionF, Sx, Sy, LineName, DirectionS):
+def mark(Fx, Fy, DirectionF, Sx, Sy, LineName, DirectionS, Profile):
     # Основная логика программы
 
     length = 20 # Длина линии ссылки
@@ -67,8 +63,8 @@ def mark(Fx, Fy, DirectionF, Sx, Sy, LineName, DirectionS):
     KFunc.MakeLine(Sx, Sy, DirectionS, length)
 
     # Вывод наименования сигнала в поле чертежа
-    SignName(Fx, Fy, LineName, DirectionF)
-    SignName(Sx, Sy, LineName, DirectionS)
+    SignName(Fx, Fy, LineName, DirectionF, Profile)
+    SignName(Sx, Sy, LineName, DirectionS, Profile)
 
     # Получение количества текстовых меток в документе
     quantityTexts = KFunc.CountTexts()

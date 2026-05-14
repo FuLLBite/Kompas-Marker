@@ -1,5 +1,3 @@
-from openpyxl.descriptors import Length
-import math
 from Get_Kompas_API import get_kompas_api7
 
 api, KAPI7, obj5, KAPI5, obj7, constants = get_kompas_api7()

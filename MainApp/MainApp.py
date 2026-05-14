@@ -1,13 +1,10 @@
-import KFunc
 import Marker
-import tkinter
 from tkinter import *
 from tkinter import ttk
-from tkinter import filedialog
-from tkinter.messagebox import showerror
 
 
-def GetLineParam(name, order, direct):
+
+def GetLineParam(order, direct, profile=None ,name=None):
     # Получение параметров о наименовании и направлении ссылки сигнала
     # name - Наименование сигнала
     # order - Порядок
@@ -16,6 +13,7 @@ def GetLineParam(name, order, direct):
     if order == 1:
         app.DirectionF = int(direct)
         app.LineName = name.get()
+        app.Profile = profile.get()
     elif order == 2:
         app.DirectionS = int(direct)
 
@@ -29,35 +27,41 @@ def ChooseMenuF():
     # Настройка окна
     window1 = Tk()
     window1.title("Первая точка")
-    window1.geometry("250x250")
+    window1.geometry("250x300")
     window1.attributes('-topmost', True)
     # текстовая метка
     label1 = ttk.Label(window1, text="Наименование сигнала")
-    label1.pack(anchor='n', padx=20, pady=10)
+    label1.pack(anchor='n', padx=20, pady=5)
     # Вывод в окно поля для получения наименования сигнала
     EntryName = ttk.Entry(window1)
     EntryName.pack(anchor='n', padx=20, pady=5)
+    # текстовая метка
+    label12 = ttk.Label(window1, text="Сечение провода в мм^2")
+    label12.pack(anchor='n', padx=20, pady=5)
+    # Вывод в окно поля для получения сечения проводника
+    EntryProfile = ttk.Entry(window1)
+    EntryProfile.pack(anchor='n', padx=20, pady=5)
     # Параметры кнопок
     position = {"padx":6, "pady":6, "anchor":"c"}
     WidthOfButton = 30
     # Вывод в окно функциональных кнопок
     directionUp = ttk.Button(window1, text='Направление ссылки на верх', width=WidthOfButton,
-                             command=lambda: [GetLineParam(EntryName, 1, 90),
+                             command=lambda: [GetLineParam(1, 90, EntryProfile, EntryName),
                                               Marker.getinfo1(1, app), ChooseMenuS(),
                                               window1.destroy()])
     directionUp.pack(**position)
     directionDown = ttk.Button(window1, text='Направление ссылки вниз', width=WidthOfButton,
-                               command=lambda: [GetLineParam(EntryName, 1, -90),
+                               command=lambda: [GetLineParam(1, -90, EntryProfile, EntryName),
                                                 Marker.getinfo1(1, app), ChooseMenuS(),
                                                 window1.destroy()])
     directionDown.pack(**position)
     directionRight = ttk.Button(window1, text='Направление ссылки вправо', width=WidthOfButton,
-                                command=lambda: [GetLineParam(EntryName, 1, 0),
+                                command=lambda: [GetLineParam(1, 0, EntryProfile, EntryName),
                                                  Marker.getinfo1(1, app), ChooseMenuS(),
                                                  window1.destroy()])
     directionRight.pack(**position)
     directionLeft = ttk.Button(window1, text='Направление ссылки влево', width=WidthOfButton,
-                               command=lambda: [GetLineParam(EntryName, 1, 180),
+                               command=lambda: [GetLineParam(1, 180, EntryProfile, EntryName),
                                                 Marker.getinfo1(1, app),
                                                 ChooseMenuS(),
                                                 window1.destroy()])
@@ -79,32 +83,36 @@ def ChooseMenuS():
     WidthOfButton = 30
     # Вывод в окно функциональных кнопок
     directionUp = ttk.Button(window2, text='Направление ссылки на верх', width=WidthOfButton,
-                             command=lambda: [GetLineParam(None, 2, 90),
+                             command=lambda: [GetLineParam( 2, 90, ),
                                              Marker.getinfo1(2, app),
                                              Marker.mark(app.Fx, app.Fy, app.DirectionF, app.Sx,
-                                                         app.Sy, app.LineName, app.DirectionS),
+                                                         app.Sy, app.LineName, app.DirectionS,
+                                                         app.Profile),
                                              window2.destroy()])
     directionUp.pack(**position)
 
     directionDown = ttk.Button(window2, text='Направление ссылки вниз', width=WidthOfButton,
-                               command=lambda: [GetLineParam(None, 2, -90),
+                               command=lambda: [GetLineParam(2, -90),
                                                 Marker.getinfo1(2, app),
                                                 Marker.mark(app.Fx, app.Fy, app.DirectionF, app.Sx,
-                                                            app.Sy, app.LineName, app.DirectionS),
+                                                            app.Sy, app.LineName, app.DirectionS,
+                                                            app.Profile),
                                                 window2.destroy()])
     directionDown.pack(**position)
     directionRight = ttk.Button(window2, text='Направление ссылки вправо', width=WidthOfButton,
-                                command=lambda: [GetLineParam(None, 2, 0),
+                                command=lambda: [GetLineParam(2, 0),
                                                  Marker.getinfo1(2, app),
                                                  Marker.mark(app.Fx, app.Fy, app.DirectionF, app.Sx,
-                                                             app.Sy, app.LineName, app.DirectionS),
+                                                             app.Sy, app.LineName, app.DirectionS,
+                                                             app.Profile),
                                                  window2.destroy()])
     directionRight.pack(**position)
     directionLeft = ttk.Button(window2, text='Направление ссылки влево', width=WidthOfButton,
-                               command=lambda: [GetLineParam(None, 2, 180),
+                               command=lambda: [GetLineParam( 2, 180),
                                                 Marker.getinfo1(2, app),
                                                 Marker.mark(app.Fx, app.Fy, app.DirectionF, app.Sx,
-                                                            app.Sy, app.LineName, app.DirectionS),
+                                                            app.Sy, app.LineName, app.DirectionS,
+                                                            app.Profile),
                                                 window2.destroy()])
     directionLeft.pack(**position)
 
@@ -126,6 +134,8 @@ class App:
         self.Fy = None
         # Наименование линии
         self.LineName = None
+        # Сечение проводника
+        self.Profile = None
         # Направление первой ссылки
         self.DirectionF = None
         # Координаты второй точки

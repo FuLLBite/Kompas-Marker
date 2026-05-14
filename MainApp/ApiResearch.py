@@ -1,47 +1,67 @@
 import pythoncom
-from win32com.client import Dispatch, gencache
+from win32com.client import Dispatch
+import inspect
+
 from Get_Kompas_API import get_kompas_api7
 
+#def marker():
+api, KAPI7, obj5, KAPI5, obj7, constants = get_kompas_api7()
 
-api, KAPI7, api5, KAPI5 = get_kompas_api7()
+kompas_document = api.ActiveDocument
+kompas_document_2d = KAPI7.IKompasDocument2D(kompas_document)
+iViewsAndLayersManager = kompas_document_2d.ViewsAndLayersManager
+iViews = iViewsAndLayersManager.Views
+iView = iViews.ActiveView
+iDrawingContainer = KAPI7.IDrawingContainer(iView)
+iDrawingTexts = iDrawingContainer.DrawingTexts
 
-    # Получаем активный документ (IDocument)
-doc = api.ActiveDocument
-if doc is None:
-    print("Нет активного документа")
+iDrawingText0 = iDrawingTexts.DrawingText(0) # Индекс текстовой метки
+iDrawingText1 = iDrawingTexts.DrawingText(1) # Индекс текстовой метки
+iText = KAPI7.IText(iDrawingText1)
+iTextLine = iText.TextLine(0) # Индекс строчки
+iTextItem = iTextLine.TextItem(0)
+iTextItem.ItemType = 0x2000
+iHypertextReferenceParam = KAPI7.IHypertextReferenceParam(iTextItem)
+iHypertextReferenceParam.LinkObject = iDrawingText0
+
+iDocument = iHypertextReferenceParam.HypertextType
 
 
-    # Приводим к интерфейсу IKompasDocument2D
-doc2d = KAPI7.IKompasDocument2D(
-    doc._oleobj_.QueryInterface(
-        KAPI7.IKompasDocument2D.CLSID,
-        pythoncom.IID_IDispatch
-        )
-    )
 
-# Смотрим что реально есть на IKompasDocument2D
-attrs = [a for a in dir(doc2d) if not a.startswith('_')]
-methods = [a for a in attrs if callable(getattr(doc2d, a, None))]
-props = [a for a in attrs if not callable(getattr(doc2d, a, None))]
-print("Методы doc2d:", methods)
-print("Свойства doc2d:", props)
 
-# Пробуем IKompasDocument2D1 (расширенный интерфейс)
-try:
-    doc2d1 = KAPI7.IKompasDocument2D1(
-        doc._oleobj_.QueryInterface(
-            KAPI7.IKompasDocument2D1.CLSID,
-            pythoncom.IID_IDispatch
-        )
-    )
-    attrs1 = [a for a in dir(doc2d1) if not a.startswith('_')]
-    print("Атрибуты IKompasDocument2D1:", attrs1)
-except Exception as e:
-    print("IKompasDocument2D1 недоступен:", e)
 
-# Пробуем через приложение напрямую
-try:
-    api_attrs = [a for a in dir(api) if 'select' in a.lower() or 'Select' in a]
-    print("Selection-атрибуты на IApplication:", api_attrs)
-except Exception as e:
-    print("Ошибка:", e)
+#iDocument = api.ActiveDocument
+#iKompasDocument2D1 = iDocument.IKompasDocument()
+#iKompasDocument2D1 = iDocument.IKompasDocument2D1()
+#SelectionManager = iKompasDocument2D1.SelectionManager
+#SelectedObjects = SelectionManager.SelectedObjects
+#draft = iKompasDocument2D1.IModelObject.IZone(SelectedObjects)
+dir(iDocument)
+
+methods = [m for m in dir(iDocument) if not m.startswith('_') and callable(getattr(iDocument, m, None))]
+print("Методы:", methods)
+
+# 3. Фильтр свойств (без скобок)
+props = [p for p in dir(iDocument) if not p.startswith('_') and not callable(getattr(iDocument, p, None))]
+print("Свойства:", props)
+
+interfaces = [
+    name for name, obj in inspect.getmembers(KAPI7)
+    if inspect.isclass(obj) and hasattr(obj, 'CLSID')
+    ]
+print("\nИнтерфейсы KAPI7:", interfaces)
+
+# 6. Список доступных интерфейсов из модуля KAPI5
+interfaces5 = [
+    name for name, obj in inspect.getmembers(KAPI5)
+    if inspect.isclass(obj) and hasattr(obj, 'CLSID')
+]
+print("\nИнтерфейсы KAPI5:", interfaces5)
+
+# 4. Тестируем каждый метод с параметрами
+for method in methods[:5]:  # Первые 5
+    try:
+        print(f"{method}: {getattr(iDocument, method).__doc__}")
+    except:
+        print(f"{method}: требует параметры")
+
