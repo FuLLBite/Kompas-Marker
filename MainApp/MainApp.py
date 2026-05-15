@@ -18,8 +18,6 @@ def GetLineParam(order, direct, profile=None ,name=None):
         app.DirectionS = int(direct)
 
 
-
-
 def ChooseMenuF():
     # Получение получение информации о направлении ссылки
     # и наименование сигнала
