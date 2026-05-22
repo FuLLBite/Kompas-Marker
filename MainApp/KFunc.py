@@ -55,11 +55,12 @@ def HyperReference(IndEdited, IndObject, codeFun=-1):
     iDrawingText1 = iDrawingTexts.DrawingText(IndEdited) # Индекс текстовой метки
     iText = KAPI7.IText(iDrawingText1)
     iTextLine = iText.TextLine(0) # Индекс строчки
-    iTextItem = iTextLine.TextItem(0)
+    iTextItem = iTextLine.AddBefore(4)
     iTextItem.ItemType = 0x2000
     iHypertextReferenceParam = KAPI7.IHypertextReferenceParam(iTextItem)
     iHypertextReferenceParam.LinkObject = iDrawingText0
     iHypertextReferenceParam.HypertextType = codeFun
+    iHypertextReferenceParam.TextLineIndex = 0
     iTextItem.Update()
     iDrawingText1.Update()
     iDrawingText0.Update()
@@ -118,4 +119,73 @@ def MakeLine(x, y, angle, length=15):
     iLineSegment.Length = length
     iLineSegment.Angle = angle
     iLineSegment.Update()
+
+def HyperReferenceOnly(IndEdited, IndObject, codeFun=-1):
+    # Функция заменяет текст в текстовой метке IndEdited,
+    # на ссылку расположения текстовой метки IndObject
+    # IndEdited, IndObject - Индекс текстовой метки
+
+    kompas_document = api.ActiveDocument
+    kompas_document_2d = KAPI7.IKompasDocument2D(kompas_document)
+    iViewsAndLayersManager = kompas_document_2d.ViewsAndLayersManager
+    iViews = iViewsAndLayersManager.Views
+    iView = iViews.ActiveView
+    iDrawingContainer = KAPI7.IDrawingContainer(iView)
+    iDrawingTexts = iDrawingContainer.DrawingTexts
+
+    iDrawingText0 = iDrawingTexts.DrawingText(IndObject) # Индекс текстовой метки
+    iDrawingText1 = iDrawingTexts.DrawingText(IndEdited) # Индекс текстовой метки
+    iText = KAPI7.IText(iDrawingText1)
+    iTextLine = iText.TextLine(0) # Индекс строчки
+    iTextItem = iTextLine.TextItem(0)
+    iTextItem.ItemType = 0x2000
+    iHypertextReferenceParam = KAPI7.IHypertextReferenceParam(iTextItem)
+    iHypertextReferenceParam.LinkObject = iDrawingText0
+    iHypertextReferenceParam.HypertextType = codeFun
+    iHypertextReferenceParam.TextLineIndex = 0
+    iTextItem.Update()
+    iDrawingText1.Update()
+    iDrawingText0.Update()
+
+def AddChar(textObj, str, order):
+    kompas_document = api.ActiveDocument
+    kompas_document_2d = KAPI7.IKompasDocument2D(kompas_document)
+    iViewsAndLayersManager = kompas_document_2d.ViewsAndLayersManager
+    iViews = iViewsAndLayersManager.Views
+    iView = iViews.ActiveView
+    iDrawingContainer = KAPI7.IDrawingContainer(iView)
+    iDrawingTexts = iDrawingContainer.DrawingTexts
+
+    iDrawingText = iDrawingTexts.DrawingText(textObj)  # Индекс текстовой метки
+    iText = KAPI7.IText(iDrawingText)
+    iTextLine = iText.TextLine(0)  # Индекс строчки
+    iTextItem = iTextLine.AddBefore(order)
+    iTextItem.Str = str
+    iTextItem.Update()
+    iDrawingText.Update()
+    #print(f'Для {textObj} выполнено {Str}') консольная проверка
+
+def MoveText(textObj, x=None, y=None):
+    kompas_document = api.ActiveDocument
+    kompas_document_2d = KAPI7.IKompasDocument2D(kompas_document)
+    iViewsAndLayersManager = kompas_document_2d.ViewsAndLayersManager
+    iViews = iViewsAndLayersManager.Views
+    iView = iViews.ActiveView
+    iDrawingContainer = KAPI7.IDrawingContainer(iView)
+    iDrawingTexts = iDrawingContainer.DrawingTexts
+    iDrawingText = iDrawingTexts.DrawingText(textObj)
+    if x is not None:
+        iDrawingText.X = x
+        iDrawingText.Update()
+    if y is not None:
+        iDrawingText.Y = y
+        iDrawingText.Update()
+
+def LenghtText(x, y):
+
+
+    ActiveDoc = obj5.ActiveDocument2D()
+    TextObject = ActiveDoc.ksFindObj(x, y, 1)
+
+    return ActiveDoc. ksGetTextLengthFromReference(TextObject)
 

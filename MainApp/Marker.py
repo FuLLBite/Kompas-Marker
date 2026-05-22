@@ -22,22 +22,22 @@ def getinfo1(order, app_obj):
 def GetCoord(x, y, Direction, length):
 
     if Direction == 0: # Вправо
-        CoordX = x + length
-        CoordY = y - 2
+        CoordX = x + length + 1
+        CoordY = y - 2.5
     elif Direction == 90: # Вверх
-        CoordX = x - 3
-        CoordY = y + length + 3
+        CoordX = x + 2.5
+        CoordY = y + length + 2
     elif Direction == 180: # Влево
         CoordX = x - length - 10
         CoordY = y - 2
     elif Direction == -90: # Вниз
-        CoordX = x - 5
+        CoordX = x + 2.5
         CoordY = y - length - 7
 
     return CoordX, CoordY
 
 def SignName(x, y, lineName, direction, profile):
-    profile_mm = profile+'мм$2' if profile!='' else profile
+    profile_mm = profile+' мм$2' if profile!='' else profile
     if direction == 0: # Вправо
         KFunc.WriteText(x+2, y+2, lineName, hStr=3.5)
         KFunc.WriteText(x+2, y-6, profile_mm, hStr=3.5)
@@ -49,7 +49,26 @@ def SignName(x, y, lineName, direction, profile):
         KFunc.WriteText(x-len(profile_mm)*2.2, y-6, profile_mm, hStr=3.5)
     elif direction == -90: # Вниз
         KFunc.WriteText(x-2, y-len(lineName)*2.2-2, lineName, 90, hStr=3.5)
-        KFunc.WriteText(x+8, y-len(profile_mm)*2.2, profile_mm, 90, hStr=3.5)
+        KFunc.WriteText(x+6, y-len(profile_mm)*2.2, profile_mm, 90, hStr=3.5)
+
+def SignZone(coordX, coordY, zone, direction):
+
+    if direction == 0 or direction == 90: # Вправо
+        KFunc.WriteText(coordX, coordY, '(', angle=direction)
+    elif direction == 180 or direction == -90: # Влево
+        KFunc.WriteText(coordX, coordY, '(', angle=direction-180)
+
+
+def MoveText(textObj, direction, coordX, coordY):
+    if direction == -90:  # Вниз
+        lenght = KFunc.LenghtText(coordX, coordY)
+        #print(lenght)
+        KFunc.MoveText(textObj, y=coordY - lenght + 6)
+    elif direction == 180:  # Влево
+        lenght = KFunc.LenghtText(coordX, coordY)
+        #print(lenght)
+        KFunc.MoveText(textObj, x=coordX - lenght + 9)
+
 
 
 
@@ -67,7 +86,7 @@ def mark(Fx, Fy, DirectionF, Sx, Sy, LineName, DirectionS, Profile):
     SignName(Sx, Sy, LineName, DirectionS, Profile)
 
     # Получение количества текстовых меток в документе
-    quantityTexts = KFunc.CountTexts()
+    IndexText = KFunc.CountTexts()
 
     # Задание координат для вывода ссылочных меток
     CoordXF, CoordYF = GetCoord(Fx, Fy, int(DirectionF), length)
@@ -84,13 +103,27 @@ def mark(Fx, Fy, DirectionF, Sx, Sy, LineName, DirectionS, Profile):
         showerror(title="Ошибка", message="В текущем документе нет разбиения на зоны")
 
     # Вывод текстовой строки с обозначение зоны
-    KFunc.WriteText(CoordXF, CoordYF, SZona)
-    KFunc.WriteText(CoordXS, CoordYS, FZona)
+    SignZone(CoordXF, CoordYF, SZona, DirectionF)
+    SignZone(CoordXS, CoordYS, FZona, DirectionS)
 
     # Связывание локальными ссылками тектовые метки
-    KFunc.HyperReference(quantityTexts, quantityTexts+1)
-    KFunc.HyperReference(quantityTexts+1, quantityTexts)
+    KFunc.HyperReference(IndexText, IndexText+1, codeFun=-2)
+    KFunc.HyperReference(IndexText+1, IndexText, codeFun=-2)
+
+    KFunc.AddChar(IndexText, ', ', 2)
+    KFunc.AddChar(IndexText+1, ', ', 2)
+
+    KFunc.HyperReference(IndexText, IndexText + 1, codeFun=-1)
+    KFunc.HyperReference(IndexText + 1, IndexText, codeFun=-1)
+
+    KFunc.AddChar(IndexText, ')', 5)
+    KFunc.AddChar(IndexText+1, ')', 5)
+
+    MoveText(IndexText, DirectionF, CoordXF, CoordYF)
+    MoveText(IndexText+1, DirectionS,CoordXS, CoordYS)
 
     # Связывание тектовых меток гиперссылками
-    KFunc.HyperLink(quantityTexts, quantityTexts+1)
-    KFunc.HyperLink(quantityTexts+1, quantityTexts)
+    KFunc.HyperLink(IndexText, IndexText+1)
+    KFunc.HyperLink(IndexText+1, IndexText)
+
+    #print(IndexText)
