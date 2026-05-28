@@ -3,9 +3,6 @@ from tkinter import *
 from tkinter import ttk
 
 
-
-
-
 def GetLineParam(order, direct, profile=None ,name=None):
     # Получение параметров о наименовании и направлении ссылки сигнала
     # name - Наименование сигнала
@@ -46,14 +43,14 @@ def ChooseMenuF():
     EntryProfile = ttk.Entry(window1)
     EntryProfile.pack(anchor='n', padx=20, pady=5)
     # текстовая метка
-    label12 = ttk.Label(window1, text="Направление ссылки")
-    label12.pack(anchor='n', padx=20, pady=5)
+    label13 = ttk.Label(window1, text="Выберете направление ссылки")
+    label13.pack(anchor='n', padx=20, pady=5)
     # Параметры кнопок
 
     WidthOfButton = 3
 
     # Вывод в окно функциональных кнопок
-    # 'Направление ссылки вверх'
+    # Направление ссылки вверх
     directionUp = Button(window1, text=chr(11205), font=('', 15), width=WidthOfButton,
                              command=lambda: [GetLineParam(1, 90, EntryProfile, EntryName),
                                               Marker.getinfo1(1, app), ChooseMenuS(),
@@ -92,41 +89,46 @@ def ChooseMenuS():
     window2.attributes('-topmost', True)
     # Параметры кнопок
     position = {"padx":6, "pady":6, "anchor":"c"}
-    WidthOfButton = 30
+    WidthOfButton = 3
+    label13 = ttk.Label(window2, text="Выберете направление второй ссылки")
+    label13.pack(anchor='n', padx=20, pady=5)
     # Вывод в окно функциональных кнопок
-    directionUp = ttk.Button(window2, text='Направление ссылки вверх', width=WidthOfButton,
+    # Направление ссылки вверх
+    directionUp = Button(window2, text=chr(11205), font=('', 15), width=WidthOfButton,
                              command=lambda: [GetLineParam( 2, 90, ),
                                              Marker.getinfo1(2, app),
                                              Marker.mark(app.Fx, app.Fy, app.DirectionF, app.Sx,
                                                          app.Sy, app.LineName, app.DirectionS,
                                                          app.Profile),
                                              window2.destroy()])
-    directionUp.pack(**position)
-
-    directionDown = ttk.Button(window2, text='Направление ссылки вниз', width=WidthOfButton,
+    directionUp.pack(padx=6, pady=6, anchor='c')
+    # Направление ссылки вниз
+    directionDown = Button(window2, text=chr(11206), font=('', 15), width=WidthOfButton,
                                command=lambda: [GetLineParam(2, -90),
                                                 Marker.getinfo1(2, app),
                                                 Marker.mark(app.Fx, app.Fy, app.DirectionF, app.Sx,
                                                             app.Sy, app.LineName, app.DirectionS,
                                                             app.Profile),
                                                 window2.destroy()])
-    directionDown.pack(**position)
-    directionRight = ttk.Button(window2, text='Направление ссылки вправо', width=WidthOfButton,
+    directionDown.place(relx=0.41,rely=0.62)
+    # Направление ссылки вправо
+    directionRight = Button(window2, text=chr(11208), font=('', 15), width=WidthOfButton,
                                 command=lambda: [GetLineParam(2, 0),
                                                  Marker.getinfo1(2, app),
                                                  Marker.mark(app.Fx, app.Fy, app.DirectionF, app.Sx,
                                                              app.Sy, app.LineName, app.DirectionS,
                                                              app.Profile),
                                                  window2.destroy()])
-    directionRight.pack(**position)
-    directionLeft = ttk.Button(window2, text='Направление ссылки влево', width=WidthOfButton,
+    directionRight.place(relx=0.6,rely=0.4)
+    # Направление ссылки влево
+    directionLeft = Button(window2, text=chr(11207), font=('', 15), width=WidthOfButton,
                                command=lambda: [GetLineParam( 2, 180),
                                                 Marker.getinfo1(2, app),
                                                 Marker.mark(app.Fx, app.Fy, app.DirectionF, app.Sx,
                                                             app.Sy, app.LineName, app.DirectionS,
                                                             app.Profile),
                                                 window2.destroy()])
-    directionLeft.pack(**position)
+    directionLeft.place(relx=0.23,rely=0.4)
 
 
 
