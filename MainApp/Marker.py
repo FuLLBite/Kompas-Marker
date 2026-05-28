@@ -23,33 +23,34 @@ def GetCoord(x, y, Direction, length):
 
     if Direction == 0: # Вправо
         CoordX = x + length + 1
-        CoordY = y - 2.5
+        CoordY = y - 2
     elif Direction == 90: # Вверх
-        CoordX = x + 2.5
+        CoordX = x + 2
         CoordY = y + length + 2
     elif Direction == 180: # Влево
         CoordX = x - length - 10
         CoordY = y - 2
     elif Direction == -90: # Вниз
-        CoordX = x + 2.5
+        CoordX = x + 2
         CoordY = y - length - 7
 
     return CoordX, CoordY
 
 def SignName(x, y, lineName, direction, profile):
     profile_mm = profile+' мм$2' if profile!='' else profile
+
     if direction == 0: # Вправо
-        KFunc.WriteText(x+2, y+2, lineName, hStr=3.5)
-        KFunc.WriteText(x+2, y-6, profile_mm, hStr=3.5)
+        KFunc.WriteText(x+2, y+1, lineName, hStr=2.5)
+        KFunc.WriteText(x+2, y-4.4, profile_mm, hStr=2.5)
     elif direction == 90: # Вверх
-        KFunc.WriteText(x-2, y+2, lineName, 90, hStr=3.5)
-        KFunc.WriteText(x+6, y+2, profile_mm, 90, hStr=3.5)
+        KFunc.WriteText(x-1, y+2, lineName, 90, hStr=2.5)
+        KFunc.WriteText(x+4.4, y+2, profile_mm, 90, hStr=2.5)
     elif direction == 180: # Влево
-        KFunc.WriteText(x-len(lineName)*2.2-3, y+2, lineName, hStr=3.5)
-        KFunc.WriteText(x-len(profile_mm)*2.2, y-6, profile_mm, hStr=3.5)
+        KFunc.WriteText(x-len(lineName)*1.2-3, y+1, lineName, hStr=2.5)
+        KFunc.WriteText(x-len(profile_mm)*1.2-3, y-4.4, profile_mm, hStr=2.5)
     elif direction == -90: # Вниз
-        KFunc.WriteText(x-2, y-len(lineName)*2.2-2, lineName, 90, hStr=3.5)
-        KFunc.WriteText(x+6, y-len(profile_mm)*2.2, profile_mm, 90, hStr=3.5)
+        KFunc.WriteText(x-1, y-len(lineName)*1.2-3, lineName, 90, hStr=2.5)
+        KFunc.WriteText(x+4.4, y-len(profile_mm)*1.2-3, profile_mm, 90, hStr=2.5)
 
 def SignZone(coordX, coordY, zone, direction):
 
@@ -75,7 +76,7 @@ def MoveText(textObj, direction, coordX, coordY):
 def mark(Fx, Fy, DirectionF, Sx, Sy, LineName, DirectionS, Profile):
     # Основная логика программы
 
-    length = 20 # Длина линии ссылки
+    length = 15 # Длина линии ссылки
 
     # Отрисовка линии ссылки в поле чертежа
     KFunc.MakeLine(Fx, Fy, DirectionF, length)

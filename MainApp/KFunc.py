@@ -10,7 +10,7 @@ def GetCursor():
     result, x, y = ActiveDoc.ksCursor(request_info, 0.0, 0.0, None)
     return x, y, result
 
-def WriteText(x, y, text, angle=0, hStr=5):
+def WriteText(x, y, text, angle=0, hStr=3.5):
     # Функция выводит текстовую строку в пространстве 2D документа, по координатам
     # x - координаты по оси x
     # y - координаты по оси y

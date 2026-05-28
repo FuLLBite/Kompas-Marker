@@ -4,6 +4,8 @@ from tkinter import ttk
 
 
 
+
+
 def GetLineParam(order, direct, profile=None ,name=None):
     # Получение параметров о наименовании и направлении ссылки сигнала
     # name - Наименование сигнала
@@ -27,43 +29,55 @@ def ChooseMenuF():
     window1.title("Первая точка")
     window1.geometry("250x300")
     window1.attributes('-topmost', True)
+
     # текстовая метка
     label1 = ttk.Label(window1, text="Наименование сигнала")
     label1.pack(anchor='n', padx=20, pady=5)
+
     # Вывод в окно поля для получения наименования сигнала
     EntryName = ttk.Entry(window1)
     EntryName.pack(anchor='n', padx=20, pady=5)
+
     # текстовая метка
     label12 = ttk.Label(window1, text="Сечение провода в мм^2")
     label12.pack(anchor='n', padx=20, pady=5)
+
     # Вывод в окно поля для получения сечения проводника
     EntryProfile = ttk.Entry(window1)
     EntryProfile.pack(anchor='n', padx=20, pady=5)
+    # текстовая метка
+    label12 = ttk.Label(window1, text="Направление ссылки")
+    label12.pack(anchor='n', padx=20, pady=5)
     # Параметры кнопок
-    position = {"padx":6, "pady":6, "anchor":"c"}
-    WidthOfButton = 30
+
+    WidthOfButton = 3
+
     # Вывод в окно функциональных кнопок
-    directionUp = ttk.Button(window1, text='Направление ссылки на верх', width=WidthOfButton,
+    # 'Направление ссылки вверх'
+    directionUp = Button(window1, text=chr(11205), font=('', 15), width=WidthOfButton,
                              command=lambda: [GetLineParam(1, 90, EntryProfile, EntryName),
                                               Marker.getinfo1(1, app), ChooseMenuS(),
                                               window1.destroy()])
-    directionUp.pack(**position)
-    directionDown = ttk.Button(window1, text='Направление ссылки вниз', width=WidthOfButton,
+    directionUp.pack(padx=6, pady=6, anchor='c')
+    # Направление ссылки вниз
+    directionDown = Button(window1, text=chr(11206), font=('', 15), width=WidthOfButton,
                                command=lambda: [GetLineParam(1, -90, EntryProfile, EntryName),
                                                 Marker.getinfo1(1, app), ChooseMenuS(),
                                                 window1.destroy()])
-    directionDown.pack(**position)
-    directionRight = ttk.Button(window1, text='Направление ссылки вправо', width=WidthOfButton,
+    directionDown.place(relx=0.41,rely=0.8)
+    # Направление ссылки вправо
+    directionRight = Button(window1, text=chr(11208), font=('', 15), width=WidthOfButton,
                                 command=lambda: [GetLineParam(1, 0, EntryProfile, EntryName),
                                                  Marker.getinfo1(1, app), ChooseMenuS(),
                                                  window1.destroy()])
-    directionRight.pack(**position)
-    directionLeft = ttk.Button(window1, text='Направление ссылки влево', width=WidthOfButton,
+    directionRight.place(relx=0.6,rely=0.66)
+    # Направление ссылки влево
+    directionLeft = Button(window1, text=chr(11207), font=('', 15), width=WidthOfButton,
                                command=lambda: [GetLineParam(1, 180, EntryProfile, EntryName),
                                                 Marker.getinfo1(1, app),
                                                 ChooseMenuS(),
                                                 window1.destroy()])
-    directionLeft.pack(**position)
+    directionLeft.place(relx=0.23,rely=0.66)
 
 
 
@@ -80,7 +94,7 @@ def ChooseMenuS():
     position = {"padx":6, "pady":6, "anchor":"c"}
     WidthOfButton = 30
     # Вывод в окно функциональных кнопок
-    directionUp = ttk.Button(window2, text='Направление ссылки на верх', width=WidthOfButton,
+    directionUp = ttk.Button(window2, text='Направление ссылки вверх', width=WidthOfButton,
                              command=lambda: [GetLineParam( 2, 90, ),
                                              Marker.getinfo1(2, app),
                                              Marker.mark(app.Fx, app.Fy, app.DirectionF, app.Sx,
@@ -151,6 +165,11 @@ class App:
 
 app = App()
 app.run()
+
+# Вместо надписей на кнопках сделать стрелочки
+# Сделать окна выбора классами, а не функциями
+# Сделать меню с настройками и справкой
+# Добавить ввод направлений с клавиатуры
 
 
 
