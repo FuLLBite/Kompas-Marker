@@ -1,7 +1,7 @@
 import KFunc
 from tkinter.messagebox import showerror
 
-def getinfo1(order, app_obj):
+def getinfo(order, app_obj):
     # Получение координат точки
     # order - Порядок
     # app_obj - объект

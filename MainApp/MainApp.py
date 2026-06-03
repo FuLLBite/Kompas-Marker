@@ -27,7 +27,7 @@ def ChooseMenuF():
     # и наименование сигнала
     def windAct(angle):
         GetLineParam(1, angle, EntryProfile, EntryName)
-        Marker.getinfo1(1, app)
+        Marker.getinfo(1, app)
         ChooseMenuS()
         window1.destroy()
 
@@ -92,7 +92,7 @@ def ChooseMenuS():
 
     def windAct(angle):
         GetLineParam(2, angle ),
-        Marker.getinfo1(2, app),
+        Marker.getinfo(2, app),
         Marker.mark(app.Fx, app.Fy, app.DirectionF, app.Sx,
                     app.Sy, app.LineName, app.DirectionS,
                     app.Profile),
