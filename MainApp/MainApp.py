@@ -8,138 +8,94 @@ DOWN = -90
 LEFT = 180
 RIGHT = 0
 
-def GetLineParam(order, direct, profile=None ,name=None):
-    # Получение параметров о наименовании и направлении ссылки сигнала
-    # name - Наименование сигнала
-    # order - Порядок
-    # direct - Направление ссылки
+class ChooseMenu:
 
-    if order == 1:
-        app.DirectionF = int(direct)
-        app.LineName = name.get()
-        app.Profile = profile.get()
-    elif order == 2:
-        app.DirectionS = int(direct)
+    def windAct(self, angle, order):
 
-
-def ChooseMenuF():
-    # Получение получение информации о направлении ссылки
-    # и наименование сигнала
-    def windAct(angle):
-        GetLineParam(1, angle, EntryProfile, EntryName)
-        Marker.getinfo(1, app)
-        ChooseMenuS()
-        window1.destroy()
-
-    # Настройка окна
-    window1 = Toplevel(app.root)
-    window1.title("Первая точка")
-    window1.geometry("250x300")
-    window1.attributes('-topmost', True)
-
-    # текстовая метка
-    label1 = ttk.Label(window1, text="Наименование сигнала", background='#f0f0f0')
-    label1.pack(anchor='n', padx=20, pady=5)
-
-    # Вывод в окно поля для получения наименования сигнала
-    EntryName = ttk.Entry(window1)
-    EntryName.pack(anchor='n', padx=20, pady=5)
-
-    # текстовая метка
-    label12 = ttk.Label(window1, text="Сечение провода в мм^2", background='#f0f0f0')
-    label12.pack(anchor='n', padx=20, pady=5)
-
-    # Вывод в окно поля для получения сечения проводника
-    EntryProfile = ttk.Entry(window1)
-    EntryProfile.pack(anchor='n', padx=20, pady=5)
-    # текстовая метка
-    label13 = ttk.Label(window1, text="Выберете направление ссылки", background='#f0f0f0')
-    label13.pack(anchor='n', padx=20, pady=5)
-    # Параметры кнопок
-
-    WidthOfButton = 3
-
-    # Вывод в окно функциональных кнопок
-    # Направление ссылки вверх
-    directionUp = Button(window1, text=chr(11205), font=('', 15), width=WidthOfButton,
-                             command=lambda: windAct(UP))
-    directionUp.pack(padx=6, pady=6, anchor='c')
-    window1.bind('<Up>', lambda event: windAct(UP))
-    app.root.bind('<Up>', lambda event: windAct(UP))
-    # Направление ссылки вниз
-    directionDown = Button(window1, text=chr(11206), font=('', 15), width=WidthOfButton,
-                               command=lambda: windAct(DOWN))
-    directionDown.place(relx=0.41,rely=0.8)
-    window1.bind('<Down>', lambda event: windAct(DOWN))
-    app.root.bind('<Down>', lambda event: windAct(DOWN))
-    # Направление ссылки вправо
-    directionRight = Button(window1, text=chr(11208), font=('', 15), width=WidthOfButton,
-                                command=lambda: windAct(RIGHT))
-    directionRight.place(relx=0.6,rely=0.66)
-    window1.bind('<Right>', lambda event: windAct(RIGHT))
-    app.root.bind('<Right>', lambda event: windAct(RIGHT))
-    # Направление ссылки влево
-    directionLeft = Button(window1, text=chr(11207), font=('', 15), width=WidthOfButton,
-                               command=lambda: windAct(LEFT))
-    directionLeft.place(relx=0.23,rely=0.66)
-    window1.bind('<Left>', lambda event: windAct(LEFT))
-    app.root.bind('<Left>', lambda event: windAct(LEFT))
+        Marker.getinfo(order, app)
+        if order == 1:
+            app.DirectionF = int(angle)
+            app.LineName = self.EntryName.get()
+            app.Profile = self.EntryProfile.get()
+            ChooseMenuS = ChooseMenu("Вторая точка", False)
+            self.window.destroy()
+        elif order == 2:
+            app.DirectionS = int(angle)
+            Marker.mark(app.Fx, app.Fy, app.DirectionF, app.Sx,
+                        app.Sy, app.LineName, app.DirectionS,
+                        app.Profile)
+            self.window.destroy()
 
 
-def ChooseMenuS():
-    # Получение получение информации о направлении ссылки
-    # и наименование сигнала
+    def TextParam(self):
+        # Текстовые метки и поля для ввода данных
+        label1 = ttk.Label(self.window, text="Наименование сигнала", background='#f0f0f0')
+        label1.pack(anchor='n', padx=20, pady=5)
 
-    def windAct(angle):
-        GetLineParam(2, angle ),
-        Marker.getinfo(2, app),
-        Marker.mark(app.Fx, app.Fy, app.DirectionF, app.Sx,
-                    app.Sy, app.LineName, app.DirectionS,
-                    app.Profile),
-        window2.destroy()
+        # Вывод в окно поля для получения наименования сигнала
+        self.EntryName = ttk.Entry(self.window)
+        self.EntryName.pack(anchor='n', padx=20, pady=5)
 
-    # Настройка окна
+        # текстовая метка
+        label12 = ttk.Label(self.window, text="Сечение провода в мм^2", background='#f0f0f0')
+        label12.pack(anchor='n', padx=20, pady=5)
 
-    window2 = Toplevel(app.root)
-    window2.title("Вторая точка")
-    window2.geometry("280x200")
-    window2.attributes('-topmost', True)
-    #window2.focus_force()
-    # Параметры кнопок
-
-    WidthOfButton = 3
-    label13 = ttk.Label(window2, text="Выберете направление второй ссылки", background='#f0f0f0')
-    label13.pack(anchor='n', padx=20, pady=5)
+        # Вывод в окно поля для получения сечения проводника
+        self.EntryProfile = ttk.Entry(self.window)
+        self.EntryProfile.pack(anchor='n', padx=20, pady=5)
+        # текстовая метка
+        label13 = ttk.Label(self.window, text="Выберете направление ссылки", background='#f0f0f0')
+        label13.pack(anchor='n', padx=20, pady=5)
 
 
-    # Вывод в окно функциональных кнопок
-    # Направление ссылки вверх
+    def __init__(self, title, FMenu):
+        self.window = Toplevel(app.root)
+        self.window.title(title)
+        self.window.attributes('-topmost', True)
 
-    directionUp = Button(window2, text=chr(11205), font=('', 15), width=WidthOfButton,
-                             command=lambda: windAct(UP))
-    directionUp.pack(padx=6, pady=6, anchor='c')
-    window2.bind('<Up>', lambda event: windAct(UP))
-    app.root.bind('<Up>', lambda event: windAct(UP))
-    # Направление ссылки вниз
-    directionDown = Button(window2, text=chr(11206), font=('', 15), width=WidthOfButton,
-                               command=lambda: windAct(DOWN))
-    directionDown.place(relx=0.41,rely=0.62)
-    window2.bind('<Down>', lambda event: windAct(DOWN))
-    app.root.bind('<Down>', lambda event: windAct(DOWN))
-    # Направление ссылки вправо
-    directionRight = Button(window2, text=chr(11208), font=('', 15), width=WidthOfButton,
-                                command=lambda: windAct(RIGHT))
-    directionRight.place(relx=0.6,rely=0.4)
-    window2.bind('<Right>', lambda event: windAct(RIGHT))
-    app.root.bind('<Right>', lambda event: windAct(RIGHT))
-    # Направление ссылки влево
-    directionLeft = Button(window2, text=chr(11207), font=('', 15), width=WidthOfButton,
-                               command=lambda: windAct(LEFT))
-    directionLeft.place(relx=0.23,rely=0.4)
-    window2.bind('<Left>', lambda event: windAct(LEFT))
-    app.root.bind('<Left>', lambda event: windAct(LEFT))
+        order = 1 # Порядок выбора меню
+        RLy = 0.66 # Координата по Y кнопок выбора направления ссылок лево/право
+        Dy = 0.8 # Координата по Y кнопок выбора направления ссылок вниз
 
+        if FMenu:
+            self.window.geometry("250x300")
+            self.TextParam()
+        else:
+            order = 2
+            RLy = 0.35
+            Dy = 0.65
+            self.window.geometry("250x150")
 
+        # Параметры кнопок
+
+        WidthOfButton = 3
+
+        # Вывод в окно функциональных кнопок
+        # Направление ссылки вверх
+        directionUp = Button(self.window, text=chr(11205), font=('', 15), width=WidthOfButton,
+                             command=lambda: self.windAct(UP, order))
+        directionUp.pack(padx=6, pady=6, anchor='c')
+
+        self.window.bind('<Up>', lambda event: self.windAct(UP, order))
+        app.root.bind('<Up>', lambda event: self.windAct(UP, order))
+        # Направление ссылки вниз
+        directionDown = Button(self.window, text=chr(11206), font=('', 15), width=WidthOfButton,
+                               command=lambda: self.windAct(DOWN, order))
+        directionDown.place(relx=0.41, rely=Dy)
+        self.window.bind('<Down>', lambda event: self.windAct(DOWN, order))
+        app.root.bind('<Down>', lambda event: self.windAct(DOWN, order))
+        # Направление ссылки вправо
+        directionRight = Button(self.window, text=chr(11208), font=('', 15), width=WidthOfButton,
+                                command=lambda: self.windAct(RIGHT, order))
+        directionRight.place(relx=0.6, rely=RLy)
+        self.window.bind('<Right>', lambda event: self.windAct(RIGHT, order))
+        app.root.bind('<Right>', lambda event: self.windAct(RIGHT, order))
+        # Направление ссылки влево
+        directionLeft = Button(self.window, text=chr(11207), font=('', 15), width=WidthOfButton,
+                               command=lambda: self.windAct(LEFT, order))
+        directionLeft.place(relx=0.23, rely=RLy)
+        self.window.bind('<Left>', lambda event: self.windAct(LEFT, order))
+        app.root.bind('<Left>', lambda event: self.windAct(LEFT, order))
 
 
 
@@ -168,9 +124,9 @@ class App:
         self.DirectionS = None
 
         # Добавление кнопки пользователя
-        btn = ttk.Button(self.root, text="Добавить ссылку", command=ChooseMenuF)
+        btn = ttk.Button(self.root, text="Добавить ссылку", command = lambda: ChooseMenu("Первая точка", True))
         btn.pack(expand=True)
-        self.root.bind('<Return>', lambda event: ChooseMenuF())
+        self.root.bind('<Return>', lambda event: ChooseMenu("Первая точка"))
     def run(self):
         self.root.mainloop()
 
@@ -178,8 +134,9 @@ class App:
 app = App()
 app.run()
 
-# Сделать меню с настройками и справкой
-# Добавить ввод направлений с клавиатуры
+# Сделать возсожность настраивать шрифты
+# Сделать автонумерацию элементов
+# Сделать автоматический перечень
 
 
 
