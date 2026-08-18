@@ -13,50 +13,35 @@ iViewsAndLayersManager = kompas_document_2d.ViewsAndLayersManager
 iViews = iViewsAndLayersManager.Views
 iView = iViews.ActiveView
 iDrawingContainer = KAPI7.IDrawingContainer(iView)
-iDrawingTexts = iDrawingContainer.DrawingTexts
+MacroObjects = iDrawingContainer.MacroObjects
+MacroObject = MacroObjects.MacroObject(1)
+iApplication = KAPI7.IApplication(MacroObject)
+iPropertyMng = KAPI7.IPropertyMng(iApplication)
 
-iDrawingText0 = iDrawingTexts.DrawingText(0) # Индекс текстовой метки
-iDrawingText1 = iDrawingTexts.DrawingText(1) # Индекс текстовой метки
-iText = KAPI7.IText(iDrawingText1)
-iTextLine = iText.TextLine(0) # Индекс строчки
-iTextItem = iTextLine.TextItem(0)
-iTextItem.ItemType = 0x2000
-iHypertextReferenceParam = KAPI7.IHypertextReferenceParam(iTextItem)
-iHypertextReferenceParam.LinkObject = iDrawingText0
-
-iDocument = iHypertextReferenceParam.HypertextType
+iDocument = iPropertyMng
 
 
-
-
-
-#iDocument = api.ActiveDocument
-#iKompasDocument2D1 = iDocument.IKompasDocument()
-#iKompasDocument2D1 = iDocument.IKompasDocument2D1()
-#SelectionManager = iKompasDocument2D1.SelectionManager
-#SelectedObjects = SelectionManager.SelectedObjects
-#draft = iKompasDocument2D1.IModelObject.IZone(SelectedObjects)
 dir(iDocument)
 
 methods = [m for m in dir(iDocument) if not m.startswith('_') and callable(getattr(iDocument, m, None))]
-print("Методы:", methods)
+print("Методы:\n", *methods, sep='\n')
 
 # 3. Фильтр свойств (без скобок)
 props = [p for p in dir(iDocument) if not p.startswith('_') and not callable(getattr(iDocument, p, None))]
-print("Свойства:", props)
+print("\nСвойства:\n", *props, sep='\n')
 
 interfaces = [
     name for name, obj in inspect.getmembers(KAPI7)
     if inspect.isclass(obj) and hasattr(obj, 'CLSID')
     ]
-print("\nИнтерфейсы KAPI7:", interfaces)
+print("\nИнтерфейсы KAPI7:\n", *interfaces, sep='\n')
 
 # 6. Список доступных интерфейсов из модуля KAPI5
 interfaces5 = [
     name for name, obj in inspect.getmembers(KAPI5)
     if inspect.isclass(obj) and hasattr(obj, 'CLSID')
 ]
-print("\nИнтерфейсы KAPI5:", interfaces5)
+print("\nИнтерфейсы KAPI5:\n", *interfaces5, sep='\n')
 
 # 4. Тестируем каждый метод с параметрами
 for method in methods[:5]:  # Первые 5

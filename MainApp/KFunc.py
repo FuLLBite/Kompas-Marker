@@ -1,4 +1,6 @@
 from Get_Kompas_API import get_kompas_api7
+from win32com.client import VARIANT
+import pythoncom
 
 api, KAPI7, obj5, KAPI5, obj7, constants = get_kompas_api7()
 
@@ -189,3 +191,31 @@ def LenghtText(x, y):
 
     return ActiveDoc. ksGetTextLengthFromReference(TextObject)
 
+def GetMacrObj():
+    kompas_document = api.ActiveDocument
+    kompas_document_2d = KAPI7.IKompasDocument2D(kompas_document)
+    iViewsAndLayersManager = kompas_document_2d.ViewsAndLayersManager
+    iViews = iViewsAndLayersManager.Views
+    iView = iViews.ActiveView
+    iDrawingContainer = KAPI7.IDrawingContainer(iView)
+    MacroObjects = iDrawingContainer.MacroObjects
+    numOfElements =  MacroObjects.Count
+    MacroObject = MacroObjects.MacroObject(0)
+    MacroObject_Name = MacroObject.Name
+    print(MacroObject)
+
+    HotPointsEditable = MacroObject.HotPointsEditable
+    print(HotPointsEditable)
+
+    iPropertyKeeper = KAPI7.IPropertyKeeper(MacroObject)
+    Properties = iPropertyKeeper.Properties
+    print(Properties)
+
+    iPropertyMng = KAPI7.IPropertyMng(api)
+    baseProp = iPropertyMng.GetProperty(kompas_document, 'base')
+    iPropertyKeeper.SetPropertyValue(baseProp, 'base', '89898')
+    baseProp.Update()
+
+
+
+GetMacrObj()
