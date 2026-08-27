@@ -1,8 +1,12 @@
 from Get_Kompas_API import get_kompas_api7
-from win32com.client import VARIANT
+from win32com.client import CastTo
 import pythoncom
+from pythoncom import VT_EMPTY
+from win32com.client import Dispatch, gencache, VARIANT
 
 api, KAPI7, obj5, KAPI5, obj7, constants = get_kompas_api7()
+
+
 
 def GetCursor():
     # Функция возвращает координаты пространства 2D документа
@@ -140,7 +144,7 @@ def HyperReferenceOnly(IndEdited, IndObject, codeFun=-1):
     iText = KAPI7.IText(iDrawingText1)
     iTextLine = iText.TextLine(0) # Индекс строчки
     iTextItem = iTextLine.TextItem(0)
-    iTextItem.ItemType = 0x2000
+    iTextItem.ItemType= 0x2000
     iHypertextReferenceParam = KAPI7.IHypertextReferenceParam(iTextItem)
     iHypertextReferenceParam.LinkObject = iDrawingText0
     iHypertextReferenceParam.HypertextType = codeFun
@@ -189,9 +193,13 @@ def LenghtText(x, y):
     ActiveDoc = obj5.ActiveDocument2D()
     TextObject = ActiveDoc.ksFindObj(x, y, 1)
 
-    return ActiveDoc. ksGetTextLengthFromReference(TextObject)
+    return ActiveDoc.ksGetTextLengthFromReference(TextObject)
 
-def GetMacrObj():
+def GetMacrObjS():
+    """
+    Функция возвращает указатель на комплекс макроэлементов открытого документа Компас 3D
+
+    """
     kompas_document = api.ActiveDocument
     kompas_document_2d = KAPI7.IKompasDocument2D(kompas_document)
     iViewsAndLayersManager = kompas_document_2d.ViewsAndLayersManager
@@ -199,23 +207,167 @@ def GetMacrObj():
     iView = iViews.ActiveView
     iDrawingContainer = KAPI7.IDrawingContainer(iView)
     MacroObjects = iDrawingContainer.MacroObjects
-    numOfElements =  MacroObjects.Count
-    MacroObject = MacroObjects.MacroObject(0)
-    MacroObject_Name = MacroObject.Name
-    print(MacroObject)
+    return MacroObjects
 
-    HotPointsEditable = MacroObject.HotPointsEditable
-    print(HotPointsEditable)
+def NumMacrObjS(MacrObjS):
+    """
+    :param MacrObjS: указатель на комплекс макроэлементов открытого документа Компас 3D
+    :return: Количиество макроэлементов открытого документа Компас 3D
+    """
+    return MacrObjS.Count
 
+def GetMacrObjt(MacrObjS, i):
+    """
+    :param MacrObjS: указатель на комплекс макроэлементов открытого документа Компас 3D
+    :param i: Индекс конкретного макроэлемената
+    :return: указаель на макроэлемент
+    """
+    return MacrObjS.MacroObject(i)
+
+def NameMacrObj(MacroObject):
+    """
+    :param MacroObject:  указатель на конкретный макроэлемент Компас 3D
+    :return: Наименование макроэлемента
+    """
+    return MacroObject.Name
+
+def HyperProp_txtMark(DrawingText, MacroObject, numOfProp):
+
+    kompas_document = api.ActiveDocument
+    iPropertyMng = KAPI7.IPropertyMng(api)
+    baseProp = iPropertyMng.GetProperty(kompas_document, numOfProp)
     iPropertyKeeper = KAPI7.IPropertyKeeper(MacroObject)
-    Properties = iPropertyKeeper.Properties
-    print(Properties)
+    iText = KAPI7.IText(DrawingText)
+    iTextLine = iText.TextLine(0)  # Индекс строчки
+    iTextItem = iTextLine.TextItem(0)
+    iTextItem.ItemType = 0x2000
+    iHypertextReferenceParam = KAPI7.IHypertextReferenceParam(iTextItem)
+    iHypertextReferenceParam.HypertextType = 0x80
+    iHypertextReferenceParam.LinkObject = MacroObject
+    iHypertextReferenceParam.PropertyId = numOfProp
+    iHypertextReferenceParam.TextLineIndex = 0
+    iTextItem.Update()
+    DrawingText.Update()
+
+
+def WriteMacroProp(MacroObject, numOfProp, mark):
+    """
+    :param MacroObject: указатель на конкретный макроэлемент Компас 3D
+    :param numOfProp: Номер свойства в параметрах сверху вниз начиная с 0
+    :param mark: текстовая метка, которая будет записана в свойство
+    :return: успешно прошла операция или нет
+    """
+    kompas_document = api.ActiveDocument
+    iPropertyMng = KAPI7.IPropertyMng(api)
+    baseProp = iPropertyMng.GetProperty(kompas_document, numOfProp)
+    iPropertyKeeper = KAPI7.IPropertyKeeper(MacroObject)
+    return iPropertyKeeper.SetPropertyValue(baseProp, mark, 1)
+
+def GetTxtDraw(MacroObject):
+    """
+    :param MacroObject: указатель на конкретный макроэлемент Компас 3D
+    :return: контейнер текстовой метки
+    """
+    iView = KAPI7.IView(MacroObject)
+    iDrawingContainer = KAPI7.IDrawingContainer(iView)
+    DrawingTexts = iDrawingContainer.DrawingTexts
+    return DrawingTexts.DrawingText(0)
+
+
+def GetTxtMacro(DrawingText):
+    """
+    :param MacroObject: указатель на конкретный макроэлемент Компас 3D
+    :return:
+    """
+    iText = KAPI7.IText(DrawingText)
+    return iText.Str
+
+def HyperProperty(DrawingText, MacroObject, numOfProp = 3, type = -1):
+
+    kompas_document = api.ActiveDocument
+    iPropertyMng = KAPI7.IPropertyMng(api)
+    baseProp = iPropertyMng.GetProperty(kompas_document, numOfProp)
+    iPropertyKeeper = KAPI7.IPropertyKeeper(MacroObject)
+    return iPropertyKeeper.InsertHypertextReference(baseProp, DrawingText, type, False, 0, 0, 0)
+
+
+def Test():
+    """
+    numOfPror
+    Порядковый номер свойства начиная с 0 в шаблоне Компас-3D
+    """
+    kompas_document = api.ActiveDocument
+    kompas_document_2d = KAPI7.IKompasDocument2D(kompas_document)
+    iViewsAndLayersManager = kompas_document_2d.ViewsAndLayersManager
+    iViews = iViewsAndLayersManager.Views
+    iView = iViews.ActiveView
+    iDrawingContainer = KAPI7.IDrawingContainer(iView)
+    MacroObjects = iDrawingContainer.MacroObjects
+    MacroObject = MacroObjects.MacroObject(0)
+
+
+    MacroObject_Name = MacroObject.Name
+    print(MacroObject_Name)
+
+    iView = KAPI7.IView(MacroObject)
+    iDrawingContainer = KAPI7.IDrawingContainer(iView)
+    DrawingTexts = iDrawingContainer.DrawingTexts
+    DrawingText = DrawingTexts.DrawingText(0)
+    iText = KAPI7.IText(DrawingText)
+    iTextLine = iText.TextLine(0)  # Индекс строчки
+    iTextItem = iTextLine.TextItem(0)
+    iTextItem.ItemType = 0x2000
 
     iPropertyMng = KAPI7.IPropertyMng(api)
-    baseProp = iPropertyMng.GetProperty(kompas_document, 'base')
-    iPropertyKeeper.SetPropertyValue(baseProp, 'base', '89898')
-    baseProp.Update()
+    baseProp = iPropertyMng.GetProperty(kompas_document, 4)
+    idProp = baseProp.Id
+
+    iPropertyKeeper = KAPI7.IPropertyKeeper(MacroObject)
+
+    iHypertextReferenceParam = KAPI7.IHypertextReferenceParam(iTextItem)
+
+
+    iHypertextReferenceParam.LinkObject = iDrawingContainer
+    iHypertextReferenceParam.HypertextType = 0x80
+    iHypertextReferenceParam.PropertyId = idProp
+
+    iTextItem.Update()
+    DrawingText.Update()
 
 
 
-GetMacrObj()
+Test()
+
+
+
+    #iPropertyKeeper.SetPropertyValue(baseProp, 'base', '89898')
+
+    #baseProp.Update()
+
+def GetMacrTEST():
+    # Имя свойства
+    name = 'Новое свойство'
+    # Значение свойства
+    value = 100
+
+    # Базовый класс документов КОМПАС
+    iKompasDocument = api.ActiveDocument
+    # Базовый класс документов-моделей КОМПАС (скрытый)
+    kompas_document_2d = KAPI7.IKompasDocument2D(iKompasDocument)
+    # Интерфейс компонента 3D документа
+    iPropertyMng = KAPI7.IPropertyMng(api)
+    # Добавить свойство
+    #iProperty = iPropertyMng.AddProperty(iKompasDocument, VARIANT(VT_EMPTY, None))
+    iProperty = iPropertyMng.GetProperty(iKompasDocument, 4)
+    print(iProperty)
+    # Имя свойства
+    #iProperty.Name = name
+    # Обновить свойство
+    #iProperty.Update()
+    # Интерфейс получения/редактирования значения свойств
+    #iPropertyKeeper = KAPI7.IPropertyKeeper(kompas_document_2d)
+    # Установить значение свойства
+    #iPropertyKeeper.SetPropertyValue(iProperty, value, 1)
+
+
+

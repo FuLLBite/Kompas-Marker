@@ -14,11 +14,23 @@ iViews = iViewsAndLayersManager.Views
 iView = iViews.ActiveView
 iDrawingContainer = KAPI7.IDrawingContainer(iView)
 MacroObjects = iDrawingContainer.MacroObjects
-MacroObject = MacroObjects.MacroObject(1)
-iApplication = KAPI7.IApplication(MacroObject)
-iPropertyMng = KAPI7.IPropertyMng(iApplication)
+numOfElements =  MacroObjects.Count
+MacroObject = MacroObjects.MacroObject(2)
+iPart7 = KAPI7.IPart7(MacroObject)
+MacroObject_Name = MacroObject.Name
 
-iDocument = iPropertyMng
+
+HotPointsEditable = MacroObject.HotPointsEditable
+
+
+iPropertyKeeper = KAPI7.IPropertyKeeper(iPart7)
+Properties = iPropertyKeeper.Properties
+
+
+iPropertyMng = KAPI7.IPropertyMng(api)
+baseProp = iPropertyMng.GetProperty(MacroObject, 'base')
+
+iDocument = MacroObject
 
 
 dir(iDocument)
