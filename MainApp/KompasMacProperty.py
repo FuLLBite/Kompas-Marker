@@ -17,6 +17,6 @@ for i in range(numOfMacro):
         numOfElements[nameElement] += 1
     WriteMacroProp(MacroObject, 4, txtPose + str(numOfElements[nameElement]))
     HyperProperty(txtContainer, MacroObject)
-    HyperProp_txtMark(txtContainer, MacroObject, 4)
+
 
 print(numOfElements)

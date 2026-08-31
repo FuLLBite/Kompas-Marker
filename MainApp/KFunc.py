@@ -282,6 +282,16 @@ def GetTxtMacro(DrawingText):
     iText = KAPI7.IText(DrawingText)
     return iText.Str
 
+def ReplaceTxt(DrawingText,  txt):
+    iText = KAPI7.IText(DrawingText)
+    iText.Clear()
+    iTextLine = iText.Add()  # Индекс строчки
+    iTextItem = iTextLine.Add()
+    iTextItem.Str = txt
+    iTextItem.Update()
+    DrawingText.Update()
+    return
+
 def HyperProperty(DrawingText, MacroObject, numOfProp = 3, type = -1):
 
     kompas_document = api.ActiveDocument
@@ -336,7 +346,7 @@ def Test():
 
 
 
-Test()
+
 
 
 
