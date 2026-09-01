@@ -263,15 +263,21 @@ def WriteMacroProp(MacroObject, numOfProp, mark):
     iPropertyKeeper = KAPI7.IPropertyKeeper(MacroObject)
     return iPropertyKeeper.SetPropertyValue(baseProp, mark, 1)
 
-def GetTxtDraw(MacroObject):
+def GetTxtDraws(MacroObject):
     """
     :param MacroObject: указатель на конкретный макроэлемент Компас 3D
-    :return: контейнер текстовой метки
+    :return: указатель на группу текстов
     """
     iView = KAPI7.IView(MacroObject)
     iDrawingContainer = KAPI7.IDrawingContainer(iView)
-    DrawingTexts = iDrawingContainer.DrawingTexts
-    return DrawingTexts.DrawingText(0)
+    return iDrawingContainer.DrawingTexts
+
+def GetTxtDraw(DrawingTexts, i):
+    """
+    :param DrawingTexts: указатель на группу текстов
+    :return: контейнер текстовой метки
+    """
+    return DrawingTexts.DrawingText(i)
 
 
 def GetTxtMacro(DrawingText):
@@ -283,13 +289,42 @@ def GetTxtMacro(DrawingText):
     return iText.Str
 
 def HyperProperty(DrawingText, MacroObject, numOfProp = 3, type = -1):
-
+    """
+    Вставляет ссылку свойства внешнего объекта в свойства макроэлемента
+    :param DrawingText: COM - объект, на свойства которого будут ссываться
+    :param MacroObject: указатель на конкретный макроэлемент Компас 3D
+    :param numOfProp: номер свойства макроэлемента сверху вниз начиная с 0
+    :param type: тип ссылки
+    :return: успешно ли завершился
+    """
     kompas_document = api.ActiveDocument
     iPropertyMng = KAPI7.IPropertyMng(api)
     baseProp = iPropertyMng.GetProperty(kompas_document, numOfProp)
     iPropertyKeeper = KAPI7.IPropertyKeeper(MacroObject)
     return iPropertyKeeper.InsertHypertextReference(baseProp, DrawingText, type, False, 0, 0, 0)
 
+def ReplaceTxt(DrawingText,  txt):
+    """
+    Заменяет текст
+    :param DrawingText: COM - объект, контейнер текста
+    :param txt: Замещающий текст
+    :return:
+    """
+    iText = KAPI7.IText(DrawingText)
+    iText.Clear()
+    iTextLine = iText.Add()  # Индекс строчки
+    iTextItem = iTextLine.Add()
+    iTextItem.Str = txt
+    iTextItem.Update()
+    DrawingText.Update()
+    return
+
+def Count(obj):
+    """
+    :param obj: COM - объекты Компас 3D
+    :return: количество объектов
+    """
+    return obj.Count
 
 def Test():
     """
@@ -334,9 +369,6 @@ def Test():
     iTextItem.Update()
     DrawingText.Update()
 
-
-
-Test()
 
 
 
