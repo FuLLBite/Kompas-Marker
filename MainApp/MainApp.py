@@ -133,6 +133,7 @@ class App:
         mc_btn = ttk.Button(self.root, text="Преобразовать макроэлементы", command = lambda: KompasMacProperty.SetMacroProp())
         mc_btn.pack(expand=True)
 
+
     def run(self):
         self.root.mainloop()
 

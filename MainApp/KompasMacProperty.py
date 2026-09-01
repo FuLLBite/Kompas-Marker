@@ -15,6 +15,7 @@ from KFunc import (GetMacrObjS,
 MacrObjS = GetMacrObjS() # Вызов указателя, который содержит все макроэлементы вида
 numOfMacro = NumMacrObjS(MacrObjS) # количество макроэлементов
 
+
 def SetMacroProp():
     mac_objts = GetMacroInfo()  # Вызов структуры данных макроэлемента
     for pos in mac_objts:  # цикл по позиционным обозначениям МЭ
