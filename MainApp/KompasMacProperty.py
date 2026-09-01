@@ -7,7 +7,6 @@ from KFunc import (GetMacrObjS,
                    WriteMacroProp,
                    GetTxtDraw,
                    HyperProperty,
-                   HyperProp_txtMark,
                    ReplaceTxt,
                    GetTxtDraws,
                    Count)
@@ -32,7 +31,7 @@ def PreparePositionTxT(MacroObject):
     txtContainers = GetTxtDraws(MacroObject)
     pos_container = None
     pos_name = None
-    for i in range(txtContainers.Count):
+    for i in range(Count(txtContainers)):
         txtContainer = GetTxtDraw(txtContainers, i)
         try:
             txt = GetTxtMacro(txtContainer)
