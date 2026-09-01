@@ -1,6 +1,7 @@
-import Marker
+import Marker, KompasMacProperty
 from tkinter import *
 from tkinter import ttk
+
 
 # Константы
 UP = 90
@@ -106,7 +107,7 @@ class App:
         self.root = Tk()
         ttk.Style().theme_use('clam')
         self.root.title("Kompas Маркер")
-        self.root.geometry("300x50")
+        self.root.geometry("300x100")
         self.root.attributes('-topmost', True)
         # Координаты первой точки
         self.Fx = None
@@ -127,6 +128,11 @@ class App:
         btn = ttk.Button(self.root, text="Добавить ссылку", command = lambda: ChooseMenu("Первая точка", True))
         btn.pack(expand=True)
         self.root.bind('<Return>', lambda event: ChooseMenu("Первая точка"))
+
+        # Добавление кнопки пользователя для преобразования макроэлементов
+        mc_btn = ttk.Button(self.root, text="Преобразовать макроэлементы", command = lambda: KompasMacProperty.SetMacroProp())
+        mc_btn.pack(expand=True)
+
     def run(self):
         self.root.mainloop()
 
@@ -135,7 +141,7 @@ app = App()
 app.run()
 
 # Сделать возсожность настраивать шрифты
-# Сделать автонумерацию элементов
+
 # Сделать автоматический перечень
 
 

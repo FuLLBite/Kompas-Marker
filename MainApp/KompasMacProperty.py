@@ -15,6 +15,18 @@ from KFunc import (GetMacrObjS,
 MacrObjS = GetMacrObjS() # Вызов указателя, который содержит все макроэлементы вида
 numOfMacro = NumMacrObjS(MacrObjS) # количество макроэлементов
 
+def SetMacroProp():
+    mac_objts = GetMacroInfo()  # Вызов структуры данных макроэлемента
+    for pos in mac_objts:  # цикл по позиционным обозначениям МЭ
+        indeX = 1  # порядковый номер обозначения
+        for name in mac_objts[pos]:  # цикл по наименованию МЭ
+            for obj in mac_objts[pos][name]:  # цикл по МЭ
+                num_pos = pos + str(indeX)  # формирование поз.обозначения для конкретного МЭ
+                WriteMacroProp(obj['Макроэлемент'], 4, num_pos)  # Запись в свойства МЭ его поз.обозначеиня
+                HyperProperty(obj['Контейнер'], obj['Макроэлемент'])  # Вствка ссылки на зону, тектовой метки МЭ
+                ReplaceTxt(obj['Контейнер'], num_pos)  # Обновление поз.обозначения в текстовой метке
+                indeX += 1
+
 def GetMacroInfo():
     # сбор информации и формирование структуры данных
     mac_objts = {}
@@ -62,16 +74,7 @@ def cliningPos(txt):
             txt_pos_wout_num += k
     return txt_pos_wout_num
 
-mac_objts = GetMacroInfo()      # Вызов структуры данных макроэлемента
-for pos in mac_objts:           # цикл по позиционным обозначениям МЭ
-    indeX = 1                   # порядковый номер обозначения
-    for name in mac_objts[pos]:                                             # цикл по наименованию МЭ
-        for obj in mac_objts[pos][name]:                                    # цикл по МЭ
-            num_pos = pos + str(indeX)                                      # формирование поз.обозначения для конкретного МЭ
-            WriteMacroProp(obj['Макроэлемент'], 4, num_pos)       # Запись в свойства МЭ его поз.обозначеиня
-            HyperProperty(obj['Контейнер'], obj['Макроэлемент'])            # Вствка ссылки на зону, тектовой метки МЭ
-            ReplaceTxt(obj['Контейнер'], num_pos)                           # Обновление поз.обозначения в текстовой метке
-            indeX += 1
+
 
 
 
