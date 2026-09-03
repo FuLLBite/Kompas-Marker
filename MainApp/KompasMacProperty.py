@@ -12,12 +12,14 @@ from KFunc import (GetMacrObjS,
                    Count)
 
 
-MacrObjS = GetMacrObjS() # Вызов указателя, который содержит все макроэлементы вида
-numOfMacro = NumMacrObjS(MacrObjS) # количество макроэлементов
+
 
 
 def SetMacroProp():
-    mac_objts = GetMacroInfo()  # Вызов структуры данных макроэлемента
+    MacrObjS = GetMacrObjS() # Вызов указателя, который содержит все макроэлементы вида
+    numOfMacro = NumMacrObjS(MacrObjS) # количество макроэлементов
+
+    mac_objts = GetMacroInfo(numOfMacro, MacrObjS)  # Вызов структуры данных макроэлемента
     for pos in mac_objts:  # цикл по позиционным обозначениям МЭ
         indeX = 1  # порядковый номер обозначения
         for name in mac_objts[pos]:  # цикл по наименованию МЭ
@@ -28,7 +30,7 @@ def SetMacroProp():
                 ReplaceTxt(obj['Контейнер'], num_pos)  # Обновление поз.обозначения в текстовой метке
                 indeX += 1
 
-def GetMacroInfo():
+def GetMacroInfo(numOfMacro, MacrObjS):
     # сбор информации и формирование структуры данных
     mac_objts = {}
     for i in range(numOfMacro):

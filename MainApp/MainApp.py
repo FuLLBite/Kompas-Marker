@@ -9,6 +9,17 @@ DOWN = -90
 LEFT = 180
 RIGHT = 0
 
+class Porperty:
+    def __init__(self):
+        self.font_size = 3.5
+
+class Font_property:
+    def __init__(self):
+        self.font_prop_window = Toplevel(app.root)
+        self.font_prop_window.title('Настройка шрифта')
+        self.font_prop_window.attributes('-topmost', True)
+        self.font_prop_window.geometry("300x100")
+
 class ChooseMenu:
 
     def windAct(self, angle, order):
@@ -53,6 +64,10 @@ class ChooseMenu:
         self.window = Toplevel(app.root)
         self.window.title(title)
         self.window.attributes('-topmost', True)
+
+        self.main_menu = Menu()
+        self.main_menu.add_command(label="Настройка шрифта", command=lambda: Font_property() )
+        self.window.config(menu=self.main_menu)
 
         order = 1 # Порядок выбора меню
         RLy = 0.66 # Координата по Y кнопок выбора направления ссылок лево/право
@@ -133,6 +148,7 @@ class App:
         mc_btn = ttk.Button(self.root, text="Преобразовать макроэлементы", command = lambda: KompasMacProperty.SetMacroProp())
         mc_btn.pack(expand=True)
 
+        proper = Porperty()
 
     def run(self):
         self.root.mainloop()
