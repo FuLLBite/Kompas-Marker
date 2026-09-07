@@ -1,6 +1,7 @@
 import KFunc
 from tkinter.messagebox import showerror
 
+
 def getinfo(order, app_obj):
     # Получение координат точки
     # order - Порядок
@@ -36,21 +37,23 @@ def GetCoord(x, y, Direction, length):
 
     return CoordX, CoordY
 
-def SignName(x, y, lineName, direction, profile):
+def SignName(x, y, lineName, direction, profile, size):
+
+
     profile_mm = profile+' мм$2' if profile!='' else profile
 
     if direction == 0: # Вправо
-        KFunc.WriteText(x+2, y+1, lineName, hStr=2.5)
-        KFunc.WriteText(x+2, y-4.4, profile_mm, hStr=2.5)
+        KFunc.WriteText(x+2, y+1, lineName, hStr=size)
+        KFunc.WriteText(x+2, y-4.4, profile_mm, hStr=size)
     elif direction == 90: # Вверх
-        KFunc.WriteText(x-1, y+2, lineName, 90, hStr=2.5)
-        KFunc.WriteText(x+4.4, y+2, profile_mm, 90, hStr=2.5)
+        KFunc.WriteText(x-1, y+2, lineName, 90, hStr=size)
+        KFunc.WriteText(x+4.4, y+2, profile_mm, 90, hStr=size)
     elif direction == 180: # Влево
-        KFunc.WriteText(x-len(lineName)*1.2-3, y+1, lineName, hStr=2.5)
-        KFunc.WriteText(x-len(profile_mm)*1.2-3, y-4.4, profile_mm, hStr=2.5)
+        KFunc.WriteText(x-len(lineName)*1.2-3, y+1, lineName, hStr=size)
+        KFunc.WriteText(x-len(profile_mm)*1.2-3, y-4.4, profile_mm, hStr=size)
     elif direction == -90: # Вниз
-        KFunc.WriteText(x-1, y-len(lineName)*1.2-3, lineName, 90, hStr=2.5)
-        KFunc.WriteText(x+4.4, y-len(profile_mm)*1.2-3, profile_mm, 90, hStr=2.5)
+        KFunc.WriteText(x-1, y-len(lineName)*1.2-3, lineName, 90, hStr=size)
+        KFunc.WriteText(x+4.4, y-len(profile_mm)*1.2-3, profile_mm, 90, hStr=size)
 
 def SignZone(coordX, coordY, zone, direction):
 
@@ -73,7 +76,7 @@ def MoveText(textObj, direction, coordX, coordY):
 
 
 
-def mark(Fx, Fy, DirectionF, Sx, Sy, LineName, DirectionS, Profile):
+def mark(Fx, Fy, DirectionF, Sx, Sy, LineName, DirectionS, Profile, props):
     # Основная логика программы
 
     length = 15 # Длина линии ссылки
@@ -83,8 +86,8 @@ def mark(Fx, Fy, DirectionF, Sx, Sy, LineName, DirectionS, Profile):
     KFunc.MakeLine(Sx, Sy, DirectionS, length)
 
     # Вывод наименования сигнала в поле чертежа
-    SignName(Fx, Fy, LineName, DirectionF, Profile)
-    SignName(Sx, Sy, LineName, DirectionS, Profile)
+    SignName(Fx, Fy, LineName, DirectionF, Profile, props.font_size)
+    SignName(Sx, Sy, LineName, DirectionS, Profile, props.font_size)
 
     # Получение количества текстовых меток в документе
     IndexText = KFunc.CountTexts()

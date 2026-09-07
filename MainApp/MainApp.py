@@ -1,4 +1,5 @@
 import Marker, KompasMacProperty
+from Property import Property_cl
 from tkinter import *
 from tkinter import ttk
 
@@ -9,18 +10,29 @@ DOWN = -90
 LEFT = 180
 RIGHT = 0
 
-class Porperty:
-    def __init__(self):
-        self.font_size = 3.5
 
-class Font_property:
-    def __init__(self):
-        self.font_prop_window = Toplevel(app.root)
-        self.font_prop_window.title('Настройка шрифта')
-        self.font_prop_window.attributes('-topmost', True)
-        self.font_prop_window.geometry("300x100")
+
 
 class ChooseMenu:
+    class Font_property:
+        def __init__(self):
+            self.font_prop_window = Toplevel(app.root)
+            self.font_prop_window.title('Настройка шрифта')
+            self.font_prop_window.attributes('-topmost', True)
+            self.font_prop_window.geometry("300x100")
+
+            self.font_entry = ttk.Entry(self.font_prop_window,  # Указание окна, где находится поле
+                                        width=10)  # Указание ширины поля
+            self.font_entry.place(relx=0.6,  # Расположние поля по х в долях рабочего пространства
+                                  rely=0.2)  # Расположние поля по у в долях рабочего пространства
+
+            self.OK_button = ttk.Button(self.font_prop_window, text='Ok', command=self.get_param)
+            self.OK_button.place(relx=0.35,  # Расположние кнопки по х в долях рабочего пространства
+                                 rely=0.6)  # Расположние кнопки по х в долях рабочего пространства
+
+        def get_param(self):
+            app.props.font_size = self.font_entry.get()
+            self.font_prop_window.destroy()
 
     def windAct(self, angle, order):
 
@@ -35,7 +47,7 @@ class ChooseMenu:
             app.DirectionS = int(angle)
             Marker.mark(app.Fx, app.Fy, app.DirectionF, app.Sx,
                         app.Sy, app.LineName, app.DirectionS,
-                        app.Profile)
+                        app.Profile, app.props)
             self.window.destroy()
 
 
@@ -66,7 +78,7 @@ class ChooseMenu:
         self.window.attributes('-topmost', True)
 
         self.main_menu = Menu()
-        self.main_menu.add_command(label="Настройка шрифта", command=lambda: Font_property() )
+        self.main_menu.add_command(label="Настройка шрифта", command=self.init_obj)
         self.window.config(menu=self.main_menu)
 
         order = 1 # Порядок выбора меню
@@ -113,6 +125,8 @@ class ChooseMenu:
         self.window.bind('<Left>', lambda event: self.windAct(LEFT, order))
         app.root.bind('<Left>', lambda event: self.windAct(LEFT, order))
 
+    def init_obj(self):
+        font_obj = self.Font_property()
 
 
 
@@ -148,7 +162,7 @@ class App:
         mc_btn = ttk.Button(self.root, text="Преобразовать макроэлементы", command = lambda: KompasMacProperty.SetMacroProp())
         mc_btn.pack(expand=True)
 
-        proper = Porperty()
+        self.props = Property_cl()
 
     def run(self):
         self.root.mainloop()
@@ -156,6 +170,9 @@ class App:
 
 app = App()
 app.run()
+
+
+
 
 # Сделать возсожность настраивать шрифты
 
