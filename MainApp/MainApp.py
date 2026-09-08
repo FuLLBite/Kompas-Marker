@@ -25,7 +25,9 @@ class ChooseMenu:
                                         width=10)  # Указание ширины поля
             self.font_entry.place(relx=0.6,  # Расположние поля по х в долях рабочего пространства
                                   rely=0.2)  # Расположние поля по у в долях рабочего пространства
-
+            font_lable = ttk.Label(self.font_prop_window, text="Установите высоту текста", background='#f0f0f0')
+            font_lable.place(relx=0.05,  # Расположние кнопки по х в долях рабочего пространства
+                                 rely=0.2)  # Расположние кнопки по х в долях рабочего пространства
             self.OK_button = ttk.Button(self.font_prop_window, text='Ok', command=self.get_param)
             self.OK_button.place(relx=0.35,  # Расположние кнопки по х в долях рабочего пространства
                                  rely=0.6)  # Расположние кнопки по х в долях рабочего пространства
@@ -172,9 +174,6 @@ app = App()
 app.run()
 
 
-
-
-# Сделать возсожность настраивать шрифты
 
 # Сделать автоматический перечень
 
